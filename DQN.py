@@ -4,7 +4,7 @@
 #https://qiita.com/ReoNagai/items/4c5c2c2b1175f898c0d6のほぼコピペ
 
 import numpy as np
-#import gym
+import gym
 import random
 
 from collections import deque
@@ -19,7 +19,7 @@ from skimage.transform import resize
 # rmsprop
 import keras
 
-from DQVdllload import DQVenv
+import DQV_env
 
 np.set_printoptions(suppress=True)
 
@@ -145,10 +145,7 @@ def main():
     min_epsilon = 0.1
     reduction_epsilon = (1. - min_epsilon) / n_episode
 
-    #env_name = 'CartPole-v0'
-    #env_name = 'Breakout-v0'
-    #env = gym.make(env_name)
-    env=DQVenv()
+    env = gym.make('dqv-v0')
     agent = Agent(env)
     replay_memory = deque()
     

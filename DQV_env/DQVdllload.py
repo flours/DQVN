@@ -1,6 +1,9 @@
 import ctypes
 import random
 
+import gym
+import numpy as np
+import gym.spaces
 
 class SpellData(ctypes.Structure):
     _fields_=[
@@ -43,7 +46,8 @@ class Character(ctypes.Structure):
 
 
 
-class DQVenv:
+class DQVenv(gym.Env):
+    metadata = {'render.modes': ['human', 'ansi']}
 
     def __init__(self):
         self.libc=ctypes.CDLL("Project5.dll")
@@ -56,11 +60,28 @@ class DQVenv:
         self.libc.battle_main.restype=None
         self.libc.battle_main.argtypes=(Character*5,ctypes.c_bool,ctypes.c_bool)
         self.character_data=(Character*5)()
-
-    def reset(self):
+        
+        self.action_space = gym.spaces.Discrete(12)
+        self.observation_space = gym.spaces.Box(
+            low=0,
+            high=10000,
+            shape=(20,)
+        )
+        self.reward_range = [-10000., 10000.]
+        
+        
+    def _reset(self):
         self.libc.init(self.character_data)
         return self.character_data
-    def step(self,action):
+
+    def _close(self):
+        pass
+
+    def _render(self, mode='human', close=False):
+        # human の場合はコンソールに出力。
+        print(self.character_data[0].action,self.character_data[0].action_spell,self.character_data[0].action_spell_target)
+
+    def _step(self,action):
         self.setAction(action)
         self.libc.status_check(self.character_data)
         self.libc.battle_main(self.character_data,False,False)
@@ -85,6 +106,9 @@ class DQVenv:
         else:
             self.character_data[0].action=1
             self.character_data[0].action_spell=action-1
+            
+    def _seed(self, seed=None):
+        pass
 
     def setRandomAction(self):
         for i in range(4):
