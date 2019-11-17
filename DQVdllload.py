@@ -1,6 +1,6 @@
 import ctypes
 import random
-
+import numpy as np
 
 class SpellData(ctypes.Structure):
     _fields_=[
@@ -56,12 +56,16 @@ class DQVenv:
         self.libc.battle_main.restype=None
         self.libc.battle_main.argtypes=(Character*5,ctypes.c_bool,ctypes.c_bool)
         self.character_data=(Character*5)()
+        self.libc.env_init.restype=None
+        self.libc.env_init.argtypes=None
+        self.libc.env_init()
 
     def reset(self):
         self.libc.init(self.character_data)
         return self.character_data
-    def step(self,action):
-        self.setAction(action)
+    def step(self,actions):
+        for i,action in enumerate(actions):
+            self.setAction(action,i,4)
         self.libc.status_check(self.character_data)
         self.libc.battle_main(self.character_data,False,False)
 
@@ -71,24 +75,42 @@ class DQVenv:
 
         reward=0
         for i in range(4):
-            reward+=self.character_data[i].HP
-        reward-=self.character_data[4].HP
+            #reward+=self.character_data[i].HP*(self.character_data[i].can_action*2)/self.character_data[i].maxHP/4
+            if(self.character_data[i].HP==0):
+                reward+=self.character_data[i].HP
+            else:
+                reward-=1000
+        reward-=self.character_data[4].HP#/self.character_data[4].maxHP
+#        print(self.character_data[i].can_action)
+#        print(reward)
 
         return self.character_data, reward, end_flag, None
 
-    def setAction(self,action):
+    def setAction(self,action,playerId,target):
+        self.character_data[playerId].action_spell_target=target
         if action==0:
-            self.character_data[0].action=0
-        elif action==12:
-            self.character_data[0].action=2
-            self.character_data[0].action_tool=0
+            self.character_data[playerId].action=0
+        elif action==self.character_data[playerId].spells.size+1:
+            self.character_data[playerId].action=2
+            self.character_data[playerId].action_tool=0
         else:
-            self.character_data[0].action=1
-            self.character_data[0].action_spell=action-1
-
+            self.character_data[playerId].action=1
+            self.character_data[playerId].action_spell=action-1
+    def printInfo(self,actions):
+        for i,action in enumerate(actions):
+            if action==0:
+                print("こうげき,",end='')
+            elif action==self.character_data[i].spells.size+1:
+                print("たたかいのどらむ,",end='')
+            else:
+                print(self.character_data[i].spells.mp[action-1],',',end='')
+        print()
     def setRandomAction(self):
         for i in range(4):
             self.character_data[i].action = random.randint(0, 2);
             self.character_data[i].action_spell = random.randint(0, self.character_data[i].spells.size-1);
             self.character_data[i].action_spell_target = random.randint(0,3);
             self.character_data[i].action_tool = 0;
+    def getRandomActions(self):
+
+        return np.random.randint(0,self.character_data[0].spells.size+2),np.random.randint(0,self.character_data[1].spells.size+2),np.random.randint(0,self.character_data[2].spells.size+2),np.random.randint(0,self.character_data[3].spells.size+2)

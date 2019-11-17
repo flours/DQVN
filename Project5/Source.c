@@ -196,6 +196,10 @@ void display()
 
 //力，素早さ，身の守り，maxHP，maxMP
 
+void env_init() {
+	srand((unsigned)time(NULL));
+}
+
 void init(Character* character)
 {
 	character[0].base_strength = 149;

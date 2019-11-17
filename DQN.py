@@ -151,7 +151,6 @@ def main():
     env=DQVenv()
     agent = Agent(env)
     replay_memory = deque()
-    
 
     # ゲーム再スタート
     for episode in range(n_episode):

@@ -16,13 +16,15 @@
 
 #define printf //
 
-int P_volume=1;//味方の人数
-int E_volume=2;//敵の人数
+int P_volume = 1;//味方の人数
+int E_volume = 2;//敵の人数
 int All_volume = P_volume + E_volume;//合計人数
 
 char playerName[][5 * 2 + 1] =
 {
 	" 主人公 ",
+	"スライム1",
+	"スライム2"
 };
 
 char enemyName[][5 * 2 + 1] =
@@ -222,9 +224,9 @@ void init(Character* character)
 	character[0].HP = character[0].maxHP;
 	character[0].MP = character[0].maxMP;
 
-	character[1].HP = character[4].maxHP;
+	character[1].HP = character[1].maxHP;
 	character[1].can_action = TRUE;
-	character[2].HP = character[5].maxHP;
+	character[2].HP = character[2].maxHP;
 	character[2].can_action = TRUE;
 
 }
@@ -459,7 +461,7 @@ void spell_gira(int playerId, Character* character,int targetId) {
 	character[playerId].MP -= 4;
 	character[targetId].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[targetId-4], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[targetId], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
 
@@ -494,7 +496,7 @@ void spell_begirama(int playerId, Character* character,int targetId) {
 	character[playerId].MP -= 6;
 	character[targetId].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[targetId-4], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[targetId], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
 
@@ -508,7 +510,7 @@ void spell_merami(int playerId, Character* character,int targetId) {
 	character[playerId].MP -= 4;
 	character[targetId].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[targetId-4], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[targetId], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
 
@@ -522,7 +524,7 @@ void spell_begiragon(int playerId, Character* character,int targetId) {
 	character[playerId].MP -= 10;
 	character[targetId].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[targetId-4], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[targetId], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
 
@@ -537,7 +539,7 @@ void spell_merazooma(int playerId, Character* character,int targetId) {
 	character[playerId].MP -= 2;
 	character[targetId].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[targetId-4], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[targetId], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
 
@@ -603,7 +605,7 @@ void spell_raidein(int playerId, Character* character,int targetId) {
 	character[playerId].MP -= 6;
 	character[targetId].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[targetId-4], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[targetId], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
 
@@ -656,7 +658,7 @@ void spell_gigadein(int playerId, Character* character,int targetId) {
 	character[playerId].MP -= 15;
 	character[playerId].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[targetId-4], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[targetId], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
 
@@ -672,7 +674,7 @@ void spell_minadein(int playerId, Character* character,int targetId) {
 	printf("＋―――――――――――――――――――＋\n");
 	character[targetId].HP -= m_damage;
 	printf("＋―――――――――――――――――――＋\n");
-	printf("｜%sに%dのダメージをあたえた　｜\n", enemyName[targetId-4], m_damage);
+	printf("｜%sに%dのダメージをあたえた　｜\n", playerName[targetId], m_damage);
 	printf("＋―――――――――――――――――――＋\n");
 
 }
@@ -687,7 +689,7 @@ void spell_hyado(int playerId, Character* character,int targetId) {
 	character[playerId].MP -= 3;
 	character[targetId].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[targetId-4], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[targetId], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
 
@@ -701,7 +703,7 @@ void spell_io(int playerId, Character* character,int targetId) {
 	character[playerId].MP -= 5;
 	character[targetId].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[targetId-4], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[targetId], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
 
@@ -748,7 +750,7 @@ void spell_iora(int playerId, Character* character,int targetId) {
 	character[playerId].MP -= 8;
 	character[targetId].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[targetId-4], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[targetId], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
 
@@ -762,7 +764,7 @@ void spell_mahyado(int playerId, Character* character,int targetId) {
 	character[playerId].MP -= 12;
 	character[targetId].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[targetId-4], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[targetId], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
 
@@ -795,7 +797,7 @@ void spell_doragoramu(int playerId, Character* character,int targetId) {
 		printf("＋―――――――――――――――――――＋\n");
 		character[targetId].HP -= damage;
 		printf("＋――――――――――――――――――＋\n");
-		printf("｜%sは%dのダメージをうけた｜\n", enemyName[targetId-4], damage);
+		printf("｜%sは%dのダメージをうけた｜\n", playerName[targetId], damage);
 		printf("＋――――――――――――――――――＋\n");
 		break;
 	default:
@@ -807,7 +809,7 @@ void spell_doragoramu(int playerId, Character* character,int targetId) {
 		printf("＋――――――――――――――＋\n");
 		character[targetId].HP -= damage;
 		printf("＋――――――――――――――――――＋\n");
-		printf("｜%sは%dのダメージをうけた｜\n", enemyName[targetId-4], damage);
+		printf("｜%sは%dのダメージをうけた｜\n", playerName[targetId], damage);
 		printf("＋――――――――――――――――――＋\n");
 		break;
 	}
@@ -823,7 +825,7 @@ void spell_ionazun(int playerId, Character* character,int targetId) {
 	character[playerId].MP -= 15;
 	character[targetId].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[targetId-4], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[targetId], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
 
@@ -1059,7 +1061,7 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 	{
 		characters[0].agility,
 		characters[1].agility,
-		characters[2].agility,
+		characters[2].agility
 	};
 	int action_ids[] = {
 		0,0,0
@@ -1114,13 +1116,15 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 	int agility_count = 0;	// 行動カウント
 
 							// バトル
-	while (1)
+	printf("%d",b_turn);
+	for (; agility_count < action_players; agility_count++)
 	{
 		int p_turn = -1;
-		int e_turn = -1;
 
-		action_ids[agility_count];
-
+		p_turn = action_ids[agility_count];
+		if (characters[p_turn].HP == 0)
+			continue;
+		//printf("%d,%d,%d,%d\n",p_turn,agility_count,action_ids[agility_count], action_players);
 
 		if (characters[p_turn].dragon == 1)
 		{
@@ -1138,7 +1142,7 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 				printf("＋―――――――――――――――――――＋\n");
 				characters[targetId].HP -= damage;
 				printf("＋――――――――――――――――――＋\n");
-				printf("｜%sは%dのダメージをうけた｜\n", enemyName[targetId-4], damage);
+				printf("｜%sは%dのダメージをうけた｜\n", playerName[targetId], damage);
 				printf("＋――――――――――――――――――＋\n");
 				break;
 			default:
@@ -1150,60 +1154,20 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 				printf("＋――――――――――――――＋\n");
 				characters[targetId].HP -= damage;
 				printf("＋――――――――――――――――――＋\n");
-				printf("｜%sは%dのダメージをうけた｜\n", enemyName[targetId-4], damage);
+				printf("｜%sは%dのダメージをうけた｜\n", playerName[targetId], damage);
 				printf("＋――――――――――――――――――＋\n");
 				break;
 			}
 			if (wait)_getch();
-			agility_count++;
-			if (agility_count == action_players)
-				break;
-			else
-				continue;
+			continue;//ここで戻る
 		}
 
-		if (p_turn == 1)//敵1の攻撃
-		{
-			
-			damage = damageMin + rand() % (damageMax - damageMin);
-
-			printf("＋―――――――――――――――――＋\n");
-			printf("｜%sのこうげき　　　　　　　｜\n", enemyName[0]);
-			printf("＋―――――――――――――――――＋\n");
-
-				characters[keep].HP -= damage;
-			if (characters[keep].HP < 0)
-				characters[keep].HP = 0;
-			int targetId = rand()%4;
-			printf("＋―――――――――――――――――＋\n");
-			printf("｜%sは%sに　　　　　｜\n", enemyName[0], playerName[targetId]);
-			printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
-			printf("＋―――――――――――――――――＋\n");
-			
-		}
-		else if (p_turn == 2)//敵2の攻撃
-		{
-			damage = damageMin + rand() % (damageMax - damageMin);
-
-			printf("＋―――――――――――――――――＋\n");
-			printf("｜%sのこうげき　　　　　　　｜\n", enemyName[1]);
-			printf("＋―――――――――――――――――＋\n");
-
-			characters[keep].HP -= damage;
-			if (characters[keep].HP < 0)
-				characters[keep].HP = 0;
-			int targetId = rand() % 4;
-			printf("＋―――――――――――――――――＋\n");
-			printf("｜%sは%sに　　　　　｜\n", enemyName[1], playerName[targetId]);
-			printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
-			printf("＋―――――――――――――――――＋\n");
-		}
-
-		else
+		
+		if (0 <= p_turn && p_turn <= P_volume - 1)//味方の攻撃
 		{
 			if (characters[p_turn].action == 0)
 			{
-				int targetId = 4;//TODO
+				int targetId = characters[p_turn].action_spell_target;//TODO
 				damageBase = characters[p_turn].attack / 2 - characters[targetId].base_endurance / 4;
 				damageMin = damageBase * 7 / 8;
 				damageMax = damageBase * 9 / 8;
@@ -1222,7 +1186,7 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 				if (disp)display();
 				printf("＋―――――――――――――――――＋\n");
 				printf("｜%sのこうげき　　　　　　　　｜\n", playerName[p_turn]);
-				printf("＋―――――――――――――――――＋");
+				printf("＋―――――――――――――――――＋\n");
 				if (wait)_getch();
 				if (keep == 0)
 				{
@@ -1232,7 +1196,7 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 					characters[targetId].HP -= c_damage;
 					if (characters[targetId].HP < 0)
 						characters[targetId].HP = 0;
-					printf("｜%sは%sに　　　　　｜\n", playerName[p_turn], enemyName[targetId-4]);
+					printf("｜%sは%sに　　　　　｜\n", playerName[p_turn], playerName[targetId]);
 					printf("｜%dのダメージを与えた　　　　　　　｜\n", c_damage);
 					printf("＋―――――――――――――――――＋\n");
 					if (wait)_getch();
@@ -1244,28 +1208,82 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 						characters[targetId].HP = 0;
 					if (disp)display();
 					printf("＋―――――――――――――――――＋\n");
-					printf("｜%sは%sに　　　　　｜\n", playerName[p_turn], enemyName[targetId-4]);
+					printf("｜%sは%sに　　　　　｜\n", playerName[p_turn], playerName[targetId]);
 					printf("｜%dのダメージを与えた　　　　　　　｜\n", damage);
 					printf("＋―――――――――――――――――＋\n");
 					if (wait)_getch();
 				}
 			}
 			else if (characters[p_turn].action == 1)
-				spell(p_turn, wait, disp, characters,characters[p_turn].action_spell_target);
-			if (characters[4].HP < 0)
-				characters[4].HP = 0;
+				spell(p_turn, wait, disp, characters, characters[p_turn].action_spell_target);
+			if (characters[1].HP < 0)
+				characters[1].HP = 0;
+			if (characters[2].HP < 0)
+				characters[2].HP = 0;
 			else if (characters[p_turn].action == 2)
 				tool(p_turn, wait, disp, characters, characters[p_turn].action_spell_target);
 		}
+		
+		else if (p_turn == 1)//敵1の攻撃
+		{
+			int targetId = rand() % P_volume;//敵の狙う味方
+			damageBase = characters[p_turn].attack / 2 - characters[targetId].base_endurance / 4;
+			damageMin = damageBase * 7 / 8;
+			damageMax = damageBase * 9 / 8;
+			printf("%d,%d",damageMax,damageMin);
+			damage = damageMin + rand() % (damageMax - damageMin);
+			if (damage < 0) damage = 0;
+
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sのこうげき　　　　　　　｜\n", enemyName[0]);
+			printf("＋―――――――――――――――――＋\n");
+			if (wait)_getch();
+
+				characters[keep].HP -= damage;
+			if (characters[keep].HP < 0) 
+				characters[keep].HP = 0;
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sは%sに　　　　　｜\n", enemyName[0], playerName[targetId]);
+			printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+			printf("＋―――――――――――――――――＋\n");
+			if (wait)_getch();
+			//agility_count++;
+		}
+		else if (p_turn == 2)//敵2の攻撃
+		{
+			int targetId = rand() % P_volume;//敵の狙う味方
+			damageBase = characters[p_turn].attack / 2 - characters[targetId].base_endurance / 4;
+			damageMin = damageBase * 7 / 8;
+			damageMax = damageBase * 9 / 8;
+			printf("%d,%d", damageMax, damageMin);
+			damage = damageMin + rand() % (damageMax - damageMin);
+			if (damage < 0) damage = 0;
+
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sのこうげき　　　　　　　｜\n", enemyName[1]);
+			printf("＋―――――――――――――――――＋\n");
+			if (wait)_getch();
+
+			characters[keep].HP -= damage;
+			if (characters[keep].HP < 0)
+				characters[keep].HP = 0;
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sは%sに　　　　　｜\n", enemyName[1], playerName[targetId]);
+			printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+			printf("＋―――――――――――――――――＋\n");
+			if (wait)_getch();
+			//agility_count++;
+		}
+
+		
 
 		b_turn++;
-		agility_count++;
 
-		if (characters[4].HP == 0)
+		if (characters[1].HP == 0&& characters[2].HP == 0)
 			break;
-		else if (characters[0].HP == 0 && characters[1].HP == 0 && characters[2].HP == 0 && characters[3].HP == 0)
+		else if (characters[0].HP == 0)
 			break;
-		else if (characters[0].paralysis == 1 && characters[1].paralysis == 1 && characters[2].paralysis == 1 && characters[3].paralysis == 1)
+		else if (characters[0].paralysis == 1)
 			break;
 		if (agility_count == action_players)
 			break;

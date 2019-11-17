@@ -49,6 +49,6 @@ typedef struct
 
 }Character;
 
-CAP_API void init(Character* character);
-CAP_API void status_check(Character* character);
-CAP_API void battle_main(Character* character, BOOL wait, BOOL disp);
+extern "C" CAP_API void init(Character* character);
+extern "C" CAP_API void status_check(Character* character);
+extern "C" CAP_API void battle_main(Character* character, BOOL wait, BOOL disp);

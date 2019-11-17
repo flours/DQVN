@@ -1,20 +1,22 @@
-﻿  dllmain.cpp
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(438,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+  pch.cpp
+  dllmain.cpp
 C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\dllmain.cpp(1): warning C4603:  '_CRT_SECURE_NO_WARNINGS': マクロが定義されていないか、プリコンパイル済みヘッダーが使用している定義とは異なります
 C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\dllmain.cpp(1): message :  ここで定義するのではなくプリコンパイル済みヘッダーにマクロを追加します
 C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\dllmain.cpp(3): message :  プリコンパイル済みヘッダーの使用
-C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\dllmain.cpp(200,1): warning C4273:  'init': dll リンクが一貫していません。
-C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\Header.h(52,14): message :  'init' の以前の定義を確認してください
-C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\dllmain.cpp(253,41): warning C4273:  'status_check': dll リンクが一貫していません。
-C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\Header.h(53,14): message :  'status_check' の以前の定義を確認してください
-C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\dllmain.cpp(1054,63): warning C4273:  'battle_main': dll リンクが一貫していません。
-C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\Header.h(54,14): message :  'battle_main' の以前の定義を確認してください
-C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\dllmain.cpp(1109,6): warning C4101:  'em_damageMin': ローカル変数は 1 度も使われていません。
-C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\dllmain.cpp(1111,6): warning C4101:  'em_damage': ローカル変数は 1 度も使われていません。
-C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\dllmain.cpp(1110,6): warning C4101:  'em_damageMax': ローカル変数は 1 度も使われていません。
-     ライブラリ C:\Users\owner\Desktop\DQVN\DQV_Dll_2\x64\Release\DQV_Dll_2.lib とオブジェクト C:\Users\owner\Desktop\DQVN\DQV_Dll_2\x64\Release\DQV_Dll_2.exp を作成中
+C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\dllmain.cpp(202,1): warning C4273:  'init': dll リンクが一貫していません。
+C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\Header.h(52,25): message :  'init' の以前の定義を確認してください
+C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\dllmain.cpp(255,41): warning C4273:  'status_check': dll リンクが一貫していません。
+C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\Header.h(53,25): message :  'status_check' の以前の定義を確認してください
+C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\dllmain.cpp(1056,63): warning C4273:  'battle_main': dll リンクが一貫していません。
+C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\Header.h(54,25): message :  'battle_main' の以前の定義を確認してください
+C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\dllmain.cpp(1111,6): warning C4101:  'em_damageMin': ローカル変数は 1 度も使われていません。
+C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\dllmain.cpp(1113,6): warning C4101:  'em_damage': ローカル変数は 1 度も使われていません。
+C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\dllmain.cpp(1112,6): warning C4101:  'em_damageMax': ローカル変数は 1 度も使われていません。
+     ライブラリ ..\..\DQV_Dll_2.lib とオブジェクト ..\..\DQV_Dll_2.exp を作成中
   コード生成しています。
-  41 of 42 functions (97.6%) were compiled, the rest were copied from previous compilation.
-    1 functions were new in current compilation
+  39 of 42 functions (92.9%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
-  DQV_Dll_2.vcxproj -> C:\Users\owner\Desktop\DQVN\DQV_Dll_2\x64\Release\DQV_Dll_2.dll
+  DQV_Dll_2.vcxproj -> C:\Users\owner\Desktop\DQVN\DQV_Dll_2\DQV_Dll_2\..\..\DQV_Dll_2.dll
