@@ -70,9 +70,9 @@ class DQVenv:
             end_flag=True
 
         reward=0
-        for i in range(4):
-            reward+=self.character_data[i].HP
-        reward-=self.character_data[4].HP
+        #for i in range(4):
+        #    reward+=self.character_data[i].HP
+        reward=self.character_data[4].maxHP-self.character_data[4].HP
 
         return self.character_data, reward, end_flag, None
 
