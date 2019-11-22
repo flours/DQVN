@@ -1,5 +1,12 @@
 Project5/x64/
 Project5/Release/
 Project5/Debug/
+Project5/.vs
 weight.h5
 history.txt
+Project5.dll
+Project5.exp
+Project5.iobj
+Project5.ipdb
+Project5.lib
+Project5.pdb

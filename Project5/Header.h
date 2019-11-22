@@ -11,13 +11,12 @@
 #endif
 
 
-typedef struct
-{
-	char(*name)[8 * 2 + 1];
-	int* mp;
-	BOOL* isSelectTarget;
-	int size;
-}SpellData;
+typedef struct {
+	wchar_t name[8*2+1];
+	int mp;
+    int isSelectTarget;
+	void (*main)(int playerid,struct Character* character, int target);
+}Spell;
 
 typedef struct
 {
@@ -45,9 +44,29 @@ typedef struct
 	int action_spell;
 	int action_spell_target;
 	int action_tool;
-	SpellData spells;
-
+	Spell (*spells)[20];
+	
 }Character;
+
+
+typedef struct {
+	char name[8 * 2 + 1];
+	int id;
+	void(*init)(int id, Character* character,int level);
+	Character data;
+}PresetCharacter;
+
+typedef struct {
+	int playernum;
+	int enemynum;
+	int fullcharacters;
+}BattleSetting;
+
+typedef struct {
+	void(*init)(int id, Character* character);
+	void(*attack)(int id, Character* character);
+}Enemy;
+
 
 CAP_API void init(Character* character);
 CAP_API void status_check(Character* character);

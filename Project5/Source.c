@@ -13,7 +13,11 @@
 
 
 
-#define printf //
+//#define printf //
+
+
+
+
 
 char playerName[][5 * 2 + 1] =
 {
@@ -21,433 +25,193 @@ char playerName[][5 * 2 + 1] =
 	"ビアンカ",
 	"レックス",
 	" タバサ ",
-};
-
-char enemyName[][5 * 2 + 1] =
-{
-	"エスターク"
-};
-
-enum commandFirst
-{
-	COMMAND_ATTACK,
-	COMMAND_SPELL,
-	COMMAND_TOOL,
-	COMMAND_MAX
-};
-char commandFirst[][4 * 2 + 1] =
-{
-	"こうげき",		//COMMAND_ATTACK
-	"じゅもん",		//COMMAND_SPELL
-	"　どうぐ",		//COMMAND_TOOL
-};
-
-enum detailSpell1
-{
-	SPELL1_HOIMI,
-	SPELL1_KIARI,
-	SPELL1_BAGI,
-	SPELL1_SUKARA,
-	SPELL1_BEHOIMI,
-	SPELL1_BAGIMA,
-	SPELL1_BEHOMA,
-	SPELL1_ZAORARU,
-	SPELL1_MEGAZARU,
-	SPELL1_BAGIKUROSU,
-	SPELL1_MAX
-};
-char detailSpell1[][8 * 2 + 1] =
-{
-	"　　ホイミ(3)",		//0
-	"　キアリー(2)",		//1
-	"　　　バギ(2)",		//2　
-	"　　スカラ(2)",		//3
-	"　ベホイミ(5)",		//4
-	"　　バギマ(4)",		//5
-	"　  ベホマ(7)",		//6
-	" ザオラル(10)",			//7
-	"メガザル(all)",		//8
-	"バギクロス(8)"			//9
-};
-int SpellMP1[10] = { 3,2,2,2,5,4,7,10,0,8 };//Spellの消費MP
-BOOL SelectTargetSpell1[10] = { TRUE,TRUE,FALSE,TRUE,TRUE,FALSE,TRUE,TRUE };//0,1,3,4,6,7番目のスペルは対象を選ぶ
-
-enum detailSpell2
-{
-	SPELL2_MERA,
-	SPELL2_GIRA,
-	SPELL2_BAIKIRUTO,
-	SPELL2_BEGIRAMA,
-	SPELL2_MERAMI,
-	SPELL2_BEGIRAGON,
-	SPELL2_MERAZOMA,
-	SPELL2_MAX
-};
-char detailSpell2[][8 * 2 + 1]=
-{
-	"　　　 メラ(2)",		//0
-	"　　　 ギラ(4)",		//1
-	" バイキルト(6)",		//2
-	"　 ベギラマ(6)",		//3
-	"　　 メラミ(4)",		//4
-	"ベギラゴン(10)",		//5
-	"メラゾーマ(10)",		//6
-};
-int SpellMP2[10] = { 2,4,6,6,4,10,10 };
-BOOL SelectTargetSpell2[10] = { FALSE,TRUE };//0,1,3,4,6,7番目のスペルは対象を選ぶ
-
-enum detailSpell3
-{
-	SPELL3_SUKURUTO,
-	SPELL3_BEHOIMI,
-	SPELL3_KIARIKU,
-	SPELL3_BEHOMA,
-	SPELL3_FUBAHA,
-	SPELL3_RAIDEIN,
-	SPELL3_ZAORIKU,
-	SPELL3_BEHOMARA,
-	SPELL3_GIGADEIN,
-	SPELL3_MINADEIN,
-	SPELL3_MAX
-};
-char detailSpell3[][8 * 2 + 1]=
-{
-	"　 　スクルト(3)",		//0
-	"　 　ベホイミ(5)",		//1
-	"　 　キアリク(2)",		//2
-	"　　 　ベホマ(7)",		//3
-	"　 　フバーハ(3)",		//4
-	" 　ライデイン(6)",		//5
-	"　　ザオリク(20)",		//6
-	"　ベホマラー(18)",		//7
-	"　ギガデイン(15)",		//8
-	"ミナデイン(ev10)"		//9
-};
-int SpellMP3[10] = { 3,5,2,7,3,6,20,18,15,10 };
-BOOL SelectTargetSpell3[10] = { FALSE,TRUE,FALSE,TRUE,FALSE,FALSE,TRUE };//0,1,3,4,6,7番目のスペルは対象を選ぶ
-
-enum detailSpell4
-{
-	SPELL4_HYADO,
-	SPELL4_IO,
-	SPELL4_HYADARUKO,
-	SPELL4_BAIKIRUTO,
-	SPELL4_RUKANAN,
-	SPELL4_IORA,
-	SPELL4_MAHYADO,
-	SPELL4_DORAGORAMU,
-	SPELL4_IONAZUN,
-	SPELL4_MAX
-};
-char detailSpell4[][8 * 2 + 1]=
-{
-	"　　 ヒャド(3)",		//0
-	"　　　 イオ(5)",		//1
-	" ヒャダルコ(5)",		//2
-	" バイキルト(6)",		//3
-	"　 ルカナン(4)",		//4
-	"　　 イオラ(8)",		//5
-	"　マヒャド(12)",		//6
-	"ドラゴラム(18)",		//7
-	"イオナズン(15)"		//8
-};
-int SpellMP4[10] = { 3,5,5,6,4,8,12,18,15 };
-BOOL SelectTargetSpell4[10] = { FALSE,FALSE,FALSE,TRUE };//0,1,3,4,6,7番目のスペルは対象を選ぶ
-
-enum spell_targetName
-{
-	NAME_PLAYER1,
-	NAME_PLAYER2,
-	NAME_PLAYER3,
-	NAME_PLAYER4,
-	NAME_MAX
-};
-char spell_targetName[][5 * 2 + 1] =
-{
-	"　主人公",
-	"ビアンカ",
-	"レックス",
-	"　タバサ"
+	"スライム"
 };
 
 
+BattleSetting fielddata;
 
 
 
 
 
-
-enum contentTool
+int base_spell_cure_single_target(int playerId, int target, Character* character, int cureMin, int cureMax)
 {
-	CONTENT_DORUM,
-	CONTENT_MAX
-};
-char contentTool[][10 * 2 + 1] =
-{
-	"　たたかいのドラム"
-};
+	if (character[target].HP == 0)return -1;//体力がない
+	int cure = cureMin + rand() % (cureMax - cureMin);
 
-
-
-void display()
-{}
-
-
-
-//力，素早さ，身の守り，maxHP，maxMP
-
-void init(Character* character)
-{
-	character[0].base_strength = 149;
-	character[0].agility = 102;
-	character[0].base_endurance = 45;
-	character[0].maxHP = 340;
-	character[0].maxMP = 170;
-
-	character[1].base_strength = 55;
-	character[1].agility = 120;
-	character[1].base_endurance = 68;
-	character[1].maxHP = 291;
-	character[1].maxMP = 290;
-
-	character[2].base_strength = 123;
-	character[2].agility = 95;
-	character[2].base_endurance = 50;
-	character[2].maxHP = 324;
-	character[2].maxMP = 180;
-
-
-	character[3].base_strength = 50;
-	character[3].agility = 115;
-	character[3].base_endurance = 75;
-	character[3].maxHP = 271;
-	character[3].maxMP = 190;
-
-
-	character[4].base_strength = 450;
-	character[4].agility = 85;
-	character[4].base_endurance = 250;
-	character[4].maxHP = 9000;
-
-	character[0].strength = character[0].base_strength;
-	character[0].endurance = character[0].base_endurance;
-	character[0].attack = character[0].strength + 130;
-	character[0].defense = character[0].endurance + 235;
-	character[0].HP = character[0].maxHP;
-	character[0].MP = character[0].maxMP;
-	SpellData spelldata = { detailSpell1,SpellMP1,SelectTargetSpell1,SPELL1_MAX };
-	character[0].spells = spelldata;
-	character[1].strength = character[1].base_strength;
-	character[1].endurance = character[1].base_endurance;
-	character[1].attack = character[1].strength + 100;
-	character[1].defense = character[1].endurance + 157;
-	character[1].HP = character[1].maxHP;
-	character[1].MP = character[1].maxMP;
-	SpellData spelldata2 = { detailSpell2,SpellMP2,SelectTargetSpell2,SPELL2_MAX };
-	character[1].spells = spelldata2;
-	character[2].strength = character[2].base_strength;
-	character[2].endurance = character[2].base_endurance;
-	character[2].attack = character[2].strength + 130;
-	character[2].defense = character[2].endurance + 235;
-	character[2].HP = character[2].maxHP;
-	character[2].MP = character[2].maxMP;
-	SpellData spelldata3 = { detailSpell3,SpellMP3,SelectTargetSpell3,SPELL3_MAX };
-	character[2].spells = spelldata3;
-	character[3].strength = character[3].base_strength;
-	character[3].endurance = character[3].base_endurance;
-	character[3].attack = character[3].strength + 100;
-	character[3].defense = character[3].endurance + 180;
-	character[3].HP = character[3].maxHP;
-	character[3].MP = character[3].maxMP;
-	SpellData spelldata4 = { detailSpell4,SpellMP4,SelectTargetSpell4,SPELL4_MAX };
-	character[3].spells = spelldata4;
-	character[4].HP = character[4].maxHP;
-	character[4].can_action = TRUE;
-
-
-}
-
-
-
-
-
-
-void status_poison(Character *character)
-{
-	for (int i = 0; i < 4; i++)
-	{
-		if (character[i].poison)
-		{
-			character[i].HP -= (character[i].maxHP / 6);
-			printf("＋――――――――――――――――――――＋\n");
-			printf("｜%sは毒によるダメージを受けた　　　　　　｜\n", playerName[i]);
-			printf("＋――――――――――――――――――――＋\n");
-		}
+	character[target].HP += cure;
+	if (character[target].HP > character[target].maxHP) {
+		cure = character[target].HP - character[target].maxHP;
+		character[target].HP = character[target].maxHP;
 	}
+	return cure;//正常に回復
+}
+
+int base_spell_attack_single_target(int playerId, int target, Character* character, int damageMin, int damageMax) {
+	if (character[target].HP == 0)return -1;//体力がない
+	int damage = damageMin + rand() % (damageMax - damageMin);
+
+	character[target].HP -= damage;
+	if (character[target].HP < 0) {
+		character[target].HP = 0;
+	}
+
+	return damage;//正常に回復
 }
 
 
-
-void status_check(Character* character) {
-	// 毒判定
-	status_poison(character);
-	for (int i = 0; i < 4; i++) {
-		if (character[i].HP == 0 || character[i].sleep || character[i].paralysis) {
-			character[i].action = 0;
-			character[i].can_action = FALSE;
+//0で生き返った,1で失敗,2はまだ生きているrand()%p==0で復活
+int revive(int playerId, int target, Character* character, int p)
+{
+	if (character[target].HP == 0)
+	{
+		int random = rand() % p;
+		if (random == 0) {
+			character[character[playerId].action_spell_target].HP = character[character[playerId].action_spell_target].maxHP / 2;
+			return 0;
 		}
 		else
-			character[i].can_action = TRUE;
+			return -1;
+	}
+	else
+	{
+		return -2;
+	}
+}
+
+int  endurance_up(int playerId, int target, Character* character) {
+
+	if (character[target].endurance >= character[target].base_endurance * 2) {
+		character[target].endurance = character[target].endurance;
+		return 1;
+	}
+	else {
+		character[target].endurance += character[target].base_endurance / 2;
+		return 0;
 	}
 }
 
 
 
-
-void spell_hoimi(int playerId,Character* character) {
-	int cureMin = 30;
-	int cureMax = 40;
-	int cure = cureMin + rand() % (cureMax - cureMin);
+void spell_hoimi(int playerId, Character* character, int target) {
+	int cure = base_spell_cure_single_target(playerId, target, character, 30, 40);
+	character[playerId].MP -= 3;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはホイミをとなえた　　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 3;
-	character[character[playerId].action_spell_target].HP += cure;
-	if (character[character[playerId].action_spell_target].HP > character[character[playerId].action_spell_target].maxHP)
-		character[character[playerId].action_spell_target].HP = character[character[playerId].action_spell_target].maxHP;
 	printf("＋―――――――――――――――――＋\n");
-	printf("｜%sはHPが%dかいふくした　｜\n", playerName[character[playerId].action_spell_target], cure);
+	printf("｜%sはHPが%dかいふくした　｜\n",playerName[target], cure);
 	printf("＋―――――――――――――――――＋\n");
 }
+Spell hoimi = { L"ホイミ",3,TRUE,spell_hoimi};
 
-
-void spell_kiarii(int playerId,Character* character) {
+void spell_kiarii(int playerId, Character* character, int target) {
+	character[playerId].MP -= 2;
+	character[target].poison = 0;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはキアリーをとなえた　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 2;
-	character[character[playerId].action_spell_target].poison = 0;
 	printf("＋―――――――――――――――――＋\n");
-	printf("｜%sのドクをけしさった　　　｜\n", playerName[character[0].action_spell_target]);
+	printf("｜%sのドクをけしさった　　　｜\n",playerName[target]);
 	printf("＋―――――――――――――――――＋\n");
 }
+Spell kiarii = { L"キアリー",2,TRUE,spell_kiarii};
 
 
-void spell_bagi(int playerId,Character* character) {
-	int m_damageMin = 8;
-	int m_damageMax = 24;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+void spell_bagi(int playerId, Character* character, int target) {
+	int damage = base_spell_attack_single_target(playerId, target, character, 8, 24);
+	character[playerId].MP -= 2;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはバギをとなえた　　　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 2;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
-
 }
+Spell bagi = { L"バギ",2,TRUE,spell_bagi };
 
-void spell_sukara(int playerId,Character* character) {
+
+void spell_sukara(int playerId, Character* character, int target) {
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはスカラをとなえた　　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
 	character[playerId].MP -= 2;
-	if (character[character[playerId].action_spell_target].endurance >= character[character[playerId].action_spell_target].base_endurance * 2)
-		character[character[playerId].action_spell_target].endurance = character[character[playerId].action_spell_target].endurance;
-	else
-		character[character[playerId].action_spell_target].endurance += character[character[playerId].action_spell_target].base_endurance / 2;
+	endurance_up(playerId, target, character);
 	printf("＋―――――――――――――――――＋\n");
-	printf("｜%sのみのまもりがあがった　｜\n", playerName[character[playerId].action_spell_target]);
+	printf("｜%sのみのまもりがあがった　｜\n", playerName[target]);
 	printf("＋―――――――――――――――――＋\n");
 }
+Spell sukara = { L"スカラ",2,TRUE,spell_sukara };
 
-void spell_behoimi(int playerId,Character* character) {
-	int cureMin = 75;
-	int cureMax = 95;
-	int cure = cureMin + rand() % (cureMax - cureMin);
+void spell_behoimi(int playerId, Character* character, int target) {
+	int cure = base_spell_cure_single_target(playerId, target, character, 75, 95);
+	character[playerId].MP -= 5;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはべホイミをとなえた　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 5;
-	character[character[playerId].action_spell_target].HP += cure;
-	if (character[character[playerId].action_spell_target].HP > character[character[playerId].action_spell_target].maxHP)
-		character[character[playerId].action_spell_target].HP = character[character[playerId].action_spell_target].maxHP;
 	printf("＋―――――――――――――――――＋\n");
-	printf("｜%sはHPが%dかいふくした　｜\n", playerName[character[playerId].action_spell_target], cure);
+	printf("｜%sはHPが%dかいふくした　｜\n", playerName[target], cure);
 	printf("＋―――――――――――――――――＋\n");
 }
+Spell behoimi = { L"ベホイミ",5,TRUE,spell_behoimi };
 
-void spell_bagima(int playerId,Character* character) {
-	int m_damageMin = 25;
-	int m_damageMax = 55;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+void spell_bagima(int playerId, Character* character, int target) {
+	int damage = base_spell_attack_single_target(playerId, target, character, 25, 55);
+	character[playerId].MP -= 4;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはバギマをとなえた　　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 4;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
+Spell bagima = { L"バギマ",4,TRUE,spell_bagima };
 
-void spell_behoma(int playerId,Character* character) {
+void spell_behoma(int playerId, Character* character, int target) {
+	character[playerId].MP -= 7;
+	character[target].HP = character[target].maxHP;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはベホマをとなえた　　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 7;
-	character[character[playerId].action_spell_target].HP = character[character[playerId].action_spell_target].maxHP;
 	printf("＋―――――――――――――――――＋\n");
-	printf("｜%sはHPがぜんかいふくした　｜\n", playerName[character[playerId].action_spell_target]);
+	printf("｜%sはHPがぜんかいふくした　｜\n", playerName[target]);
 	printf("＋―――――――――――――――――＋\n");
 }
+Spell behoma = { L"ベホマ",4,TRUE,spell_behoma };
 
-void spell_zaoraru(int playerId,Character* character) {
-	int keep;
+void spell_zaoraru(int playerId, Character* character, int target) {
+	int keep = revive(playerId, target, character, 2);
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはザオラルをとなえた　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
 	character[playerId].MP -= 10;
-	if (character[character[playerId].action_spell_target].HP == 0)
-	{
-		switch (keep = rand() % 2)
-		{
-		case 0: character[character[playerId].action_spell_target].HP = character[character[playerId].action_spell_target].maxHP / 2;
-			break;
-		case 1:
-			break;
-		}
-
-		if (keep == 0)
-		{
-			printf("＋―――――――――――――――――＋\n");
-			printf("｜%sはいきかえった　　　　　｜\n", playerName[character[playerId].action_spell_target]);
-			printf("＋―――――――――――――――――＋\n");
-		}
-		else if (keep == 1)
-		{
-			printf("＋―――――――――――――――――＋\n");
-			printf("｜しかし、失敗した　　　　　　　　　｜\n");
-			printf("＋―――――――――――――――――＋\n");
-		}
-
+	if (keep == 0) {
+		printf("＋―――――――――――――――――＋\n");
+		printf("｜%sはいきかえった　　　　　｜\n", playerName[target]);
+		printf("＋―――――――――――――――――＋\n");
 	}
-	else if (character[character[playerId].action_spell_target].HP != 0)
+	if (keep == -1) {
+		printf("＋―――――――――――――――――＋\n");
+		printf("｜しかし、失敗した　　　　　　　　　｜\n");
+		printf("＋―――――――――――――――――＋\n");
+	}
+	if (keep == -2)
 	{
 		printf("＋―――――――――――――――――＋\n");
-		printf("｜しかし、%sはいきている　　｜\n", playerName[character[playerId].action_spell_target]);
+		printf("｜しかし、%sはいきている　　｜\n", playerName[target]);
 		printf("＋―――――――――――――――――＋\n");
 	}
 }
+Spell zaoraru = { L"ザオラル",10,TRUE,spell_zaoraru };
 
-void spell_megazaru(int playerId,Character* character) {
+void spell_megazaru(int playerId, Character* character, int target) {
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはメガザルをとなえた　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
 	character[playerId].HP = 0;
 	character[playerId].MP = 0;
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < fielddata.playernum; i++) {
 		if (i != playerId) {
 			character[i].HP = character[i].maxHP;
 		}
@@ -457,52 +221,47 @@ void spell_megazaru(int playerId,Character* character) {
 	printf("｜ぜんいんが、かんぜんかいふくした　｜\n");
 	printf("＋―――――――――――――――――＋\n");
 }
+Spell megazaru = { L"メガザル",0,TRUE,spell_megazaru };
 
-void spell_bagikurosu(int playerId,Character* character) {
-	int m_damageMin = 80;
-	int m_damageMax = 180;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+void spell_bagikurosu(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 80, 180);
+	character[playerId].MP -= 8;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはバギクロスをとなえた　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 8;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
+Spell bagikurosu = { L"バギクロス",8,TRUE,spell_bagikurosu };
 
-void spell_mera(int playerId,Character* character) {
-	int m_damageMin = 12;
-	int m_damageMax = 15;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+void spell_mera(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 12, 15);
+	character[playerId].MP -= 2;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはメラをとなえた　　　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 2;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
+Spell mera = { L"メラ",2,TRUE,spell_mera };
 
 
-void spell_gira(int playerId,Character* character) {
-	int m_damageMin = 16;
-	int m_damageMax = 24;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+void spell_gira(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 16, 24);
+	character[playerId].MP -= 4;
 	printf("＋―――――――――――――――――＋\n");
-	printf("｜%sはギラをとなえた　　　　｜\n", playerName[1]);
+	printf("｜%sはギラをとなえた　　　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[1].MP -= 4;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[1], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
-
 }
+Spell gira = { L"ギラ",4,TRUE,spell_gira };
 
-void spell_baikiruto(int playerId,Character* character) {
+
+void spell_baikiruto(int playerId, Character* character, int target) {
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはバイキルトをとなえた　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
@@ -522,67 +281,60 @@ void spell_baikiruto(int playerId,Character* character) {
 		printf("＋―――――――――――――――――＋\n");
 	}
 }
+Spell baikiruto = { L"バイキルト",6,TRUE,spell_baikiruto };
 
-void spell_begirama(int playerId,Character* character) {
-	int m_damageMin = 30;
-	int m_damageMax = 42;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+void spell_begirama(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 30, 42);
+	character[playerId].MP -= 6;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはベギラマをとなえた　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 6;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
+Spell begirama = { L"ベギラマ",6,TRUE,spell_begirama };
 
-void spell_merami(int playerId,Character* character) {
-	int m_damageMin = 70;
-	int m_damageMax = 90;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+void spell_merami(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 70, 90);
+	character[playerId].MP -= 4;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはメラミをとなえた　　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 4;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
+Spell merami = { L"メラミ",4,TRUE,spell_merami };
 
-void spell_begiragon(int playerId,Character* character) {
-	int m_damageMin = 88;
-	int m_damageMax = 112;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+void spell_begiragon(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 88, 112);
+	character[playerId].MP -= 10;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはベギラゴンをとなえた　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[1].MP -= 10;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
+Spell begiragon = { L"ベギラゴン",10,TRUE,spell_begiragon };
 
 
-void spell_merazooma(int playerId,Character* character) {
-	int m_damageMin = 180;
-	int m_damageMax = 200;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+void spell_merazooma(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 180, 200);
+	character[playerId].MP -= 2;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはメラゾーマをとなえた　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 2;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
+Spell merazooma = { L"メラゾーマ",2,TRUE,spell_merazooma };
 
 
 
-void spell_sukuruto(int playerId,Character* character) {
+void spell_sukuruto(int playerId, Character* character, int target) {
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはスクルトをとなえた　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
@@ -605,60 +357,62 @@ void spell_sukuruto(int playerId,Character* character) {
 		}
 	}
 }
+Spell sukuruto = { L"スクルト",3,TRUE,spell_sukuruto };
 
-void spell_kiariku(int playerId,Character* character) {
+
+void spell_kiariku(int playerId, Character* character, int target) {
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはキアリクをとなえた　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
 	character[playerId].MP -= 2;
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < fielddata.playernum; i++) {
 		if (character[i].paralysis == 0)continue;
 		character[i].paralysis = 0;
 		printf("＋―――――――――――――――――＋\n");
-		printf("｜%sのマヒをけしさった　　　｜\n", playerName[character[0].action_spell_target]);
+		printf("｜%sのマヒをけしさった　　　｜\n", playerName[i]);
 		printf("＋―――――――――――――――――＋\n");
 	}
 }
+Spell kiariku = { L"キアリク",2,TRUE,spell_kiariku };
 
-void spell_hubaaha(int playerId,Character* character) {
+void spell_hubaaha(int playerId, Character* character, int target) {
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはフバーハをとなえた　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
 	character[playerId].MP -= 3;
-	for(int i=0;i<4;i++)
+	for (int i = 0; i < fielddata.playernum; i++)
 		character[i].bless = 1.0 / 2;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜ぜんいんのブレスたいせいがあがった｜\n");
 	printf("＋―――――――――――――――――＋\n");
 }
+Spell hubaaha = { L"フバーハ",3,FALSE,spell_hubaaha };
 
-void spell_raidein(int playerId,Character* character) {
-	int m_damageMin = 70;
-	int m_damageMax = 90;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+
+void spell_raidein(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 70, 90);
+	character[playerId].MP -= 6;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはライデインをとなえた　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 6;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
+Spell raidein = { L"ライデイン",6,TRUE,spell_raidein };
 
-void spell_zaoriku(int playerId,Character* character) {
+void spell_zaoriku(int playerId, Character* character, int target) {
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはザオリクをとなえた　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
 	character[playerId].MP -= 20;
-	if (character[character[playerId].action_spell_target].HP == 0)
-	{
-		character[character[playerId].action_spell_target].HP = character[character[playerId].action_spell_target].maxHP;
+	int keep = revive(playerId, target, character, 1);
+	if (keep == 0) {
 		printf("＋――――――――――――――――――――――――＋\n");
 		printf("｜%sはいきかえって、かんぜんかいふくした　｜\n", playerName[character[playerId].action_spell_target]);
 		printf("＋――――――――――――――――――――――――＋\n");
 	}
-	else if (character[character[playerId].action_spell_target].HP != 0)
+	else if (keep == -2)
 	{
 		printf("＋―――――――――――――――――＋\n");
 		printf("｜しかし、%sはいきている　　｜\n", playerName[character[playerId].action_spell_target]);
@@ -666,155 +420,145 @@ void spell_zaoriku(int playerId,Character* character) {
 	}
 
 }
+Spell zaoriku = { L"ザオリク",20,TRUE,spell_zaoriku };
 
-void spell_behomaraa(int playerId,Character* character) {
-	int cureMin = 100;
-	int cureMax = 120;
-	int cure = cureMin + rand() % (cureMax - cureMin);
+
+void spell_behomaraa(int playerId, Character* character, int target) {
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはベホマラーをとなえた　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
 	character[playerId].MP -= 18;
-	for (int i = 0; i < 4; i++) {
-		character[i].HP += cure;
-		if (character[i].HP > character[i].maxHP)
-			character[i].HP = character[i].maxHP;
+	for (int i = 0; i < fielddata.playernum; i++) {
+		base_spell_cure_single_target(playerId, i, character, 100, 120);
 	}
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜ぜんいんのHPがかいふくした　　　　｜\n");
 	printf("＋―――――――――――――――――＋\n");
 }
+Spell behomaraa = { L"キアリク",18,FALSE,spell_behomaraa };
 
-void spell_gigadein(int playerId,Character* character) {
-	int m_damageMin = 175;
-	int m_damageMax = 225;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+
+void spell_gigadein(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 175, 225);
+	character[playerId].MP -= 15;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはギガデインをとなえた　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 15;
-	character[playerId].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
+Spell gigadein = { L"ギガデイン",15,TRUE,spell_gigadein};
 
-void spell_minadein(int playerId,Character* character) {
-	int m_damageMin = 300;
-	int m_damageMax = 350;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
-
+void spell_minadein(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 300, 350);
 	for (int i = 0; i < 4; i++)character[i].MP -= 10;
+
 	printf("＋―――――――――――――――――――＋\n");
-	printf("｜%sはぜんいんからちからをあつめ｜\n", playerName[2]);
+	printf("｜%sはぜんいんからちからをあつめ｜\n", playerName[playerId]);
 	printf("｜ミナデインをとなえた　　　　　　　　　｜\n");
 	printf("＋―――――――――――――――――――＋\n");
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――＋\n");
-	printf("｜%sに%dのダメージをあたえた　｜\n", enemyName[0], m_damage);
+	printf("｜%sに%dのダメージをあたえた　｜\n", playerName[target], m_damage);
 	printf("＋―――――――――――――――――――＋\n");
 
 }
+Spell minadein = { L"ミナデイン",10,TRUE,spell_minadein };
 
-void spell_hyado(int playerId,Character* character) {
-	int m_damageMin = 25;
-	int m_damageMax = 35;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+void spell_hyado(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 25, 35);
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはヒャドをとなえた　　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
 	character[playerId].MP -= 3;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
+Spell hyado = { L"ヒャド",3,TRUE,spell_hyado };
 
-void spell_io(int playerId,Character* character) {
-	int m_damageMin = 20;
-	int m_damageMax = 30;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+void spell_io(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 20, 30);
+	character[playerId].MP -= 5;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはイオをとなえた　　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 5;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
+Spell io = { L"ヒャド",5,TRUE,spell_io };
 
-void spell_hyadaruko(int playerId,Character* character) {
-	int m_damageMin = 42;
-	int m_damageMax = 58;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+void spell_hyadaruko(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 42, 58);
+	character[playerId].MP -= 5;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはヒャダルコをとなえた　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 5;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
+Spell hyadaruko = { L"ヒャダルコ",5,TRUE,spell_hyadaruko };
 
-void spell_runakan(int playerId,Character* character) {
+
+void spell_rukanan(int playerId, Character* character, int target) {
 	printf("＋―――――――――――――――――＋\n");
-	printf("｜%sはルカナンをとなえた　　｜\n", enemyName[playerId]);
+	printf("｜%sはルカナンをとなえた　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
 	character[playerId].MP -= 4;
-	if (character[4].base_endurance == 0)
+	if (character[target].base_endurance == 0)
 	{
 		printf("＋――――――――――――――――――――＋\n");
-		printf("｜%sのみのまもりはもうさがらない｜\n", enemyName[4]);
+		printf("｜%sのみのまもりはもうさがらない｜\n", playerName[target]);
 		printf("＋――――――――――――――――――――＋\n");
 	}
 	else
 	{
-		character[4].base_endurance -= character[4].base_endurance / 2;
+		character[target].base_endurance -= character[target].base_endurance / 2;
 		printf("＋―――――――――――――――――＋\n");
-		printf("｜%sのみのまもりがさがった｜\n", playerName[4]);
+		printf("｜%sのみのまもりがさがった｜\n", playerName[target]);
 		printf("＋―――――――――――――――――＋\n");
 	}
 }
-void spell_iora(int playerId,Character* character) {
-	int m_damageMin = 52;
-	int m_damageMax = 68;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+Spell rukanan = { L"ルカナン",4,TRUE,spell_rukanan };
+
+
+void spell_iora(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 52, 68);
+	character[playerId].MP -= 8;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはイオラをとなえた　　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 8;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
+Spell iora = { L"イオラ",8,TRUE,spell_iora };
 
-void spell_mahyado(int playerId,Character* character) {
-	int m_damageMin = 80;
-	int m_damageMax = 104;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+
+void spell_mahyado(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 80, 104);
+	character[playerId].MP -= 12;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはマヒャドをとなえた　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 12;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
+Spell mahyado = { L"マヒャド",12,TRUE,spell_mahyado };
 
-void spell_doragoramu(int playerId,Character* character) {
+void spell_doragoramu(int playerId, Character* character, int target) {
+	character[playerId].MP -= 18;
+	character[playerId].dragon = 1;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはドラゴラムをとなえた　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 18;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはドラゴンになった　　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
 
-	character[playerId].dragon = 1;
 
 	//ドラゴンのデフォルトアクション
 	int damageBase;
@@ -825,16 +569,16 @@ void spell_doragoramu(int playerId,Character* character) {
 	switch (rand() % 3)
 	{
 	case 0:
-		damageBase = character[playerId].attack / 2 - character[4].base_endurance / 4;
+		damageBase = character[playerId].attack / 2 - character[target].base_endurance / 4;
 		damageMin = damageBase * 7 / 8 + 60;
 		damageMax = damageBase * 9 / 8 + 60;
 		damage = damageMin + rand() % (damageMax - damageMin);
 		printf("＋―――――――――――――――――――＋\n");
 		printf("｜%sはするどいツメでこうげきした｜\n", playerName[playerId]);
 		printf("＋―――――――――――――――――――＋\n");
-		character[4].HP -= damage;
+		character[target].HP -= damage;
 		printf("＋――――――――――――――――――＋\n");
-		printf("｜%sは%dのダメージをうけた｜\n", enemyName[0], damage);
+		printf("｜%sは%dのダメージをうけた｜\n", playerName[target], damage);
 		printf("＋――――――――――――――――――＋\n");
 		break;
 	default:
@@ -844,32 +588,32 @@ void spell_doragoramu(int playerId,Character* character) {
 		printf("＋――――――――――――――＋\n");
 		printf("｜%sはほのおをはいた　｜\n", playerName[playerId]);
 		printf("＋――――――――――――――＋\n");
-		character[4].HP -= damage;
+		character[target].HP -= damage;
 		printf("＋――――――――――――――――――＋\n");
-		printf("｜%sは%dのダメージをうけた｜\n", enemyName[0], damage);
+		printf("｜%sは%dのダメージをうけた｜\n", playerName[target], damage);
 		printf("＋――――――――――――――――――＋\n");
 		break;
 	}
 }
+Spell doragoramu = { L"ドラゴラム",18,TRUE,spell_doragoramu };
 
-void spell_ionazun(int playerId,Character* character) {
-	int m_damageMin = 120;
-	int m_damageMax = 160;
-	int m_damage = m_damageMin + rand() % (m_damageMax - m_damageMin);
+
+void spell_ionazun(int playerId, Character* character, int target) {
+	int m_damage = base_spell_attack_single_target(playerId, target, character, 120, 160);
+	character[playerId].MP -= 15;
 	printf("＋―――――――――――――――――＋\n");
 	printf("｜%sはイオナズンをとなえた　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
-	character[playerId].MP -= 15;
-	character[4].HP -= m_damage;
 	printf("＋―――――――――――――――――――――――――＋\n");
-	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], enemyName[0], m_damage);
+	printf("｜%sは%sに%dのダメージをあたえた　　｜\n", playerName[playerId], playerName[target], m_damage);
 	printf("＋―――――――――――――――――――――――――＋\n");
 }
+Spell ionazun = { L"イオナズン",15,TRUE,spell_ionazun };
 
 
 
 
-void tool_tatakainodoramu(int playerId,Character* character) {
+void tool_tatakainodoramu(int playerId, Character* character, int target) {
 	printf("＋――――――――――――――――――＋\n");
 	printf("｜%sはたたかいのドラムを使った　　　　｜\n", playerName[playerId]);
 	printf("＋――――――――――――――――――＋\n");
@@ -892,187 +636,347 @@ void tool_tatakainodoramu(int playerId,Character* character) {
 
 
 
+Spell *presetspell1[20] = {&hoimi,&kiarii,&bagi,&sukara,&behoimi,&bagima,&behoma,&zaoraru,&megazaru,&bagikurosu};
+Spell *presetspell2[20] = {&mera,&gira,&baikiruto,&begirama,&merami,&begiragon,&merazooma};
+Spell *presetspell3[20] = { &sukuruto,&behoimi,&kiariku,&behoma,&hubaaha,&raidein,&zaoriku,&behomaraa,&gigadein,&minadein};
+Spell *presetspell4[20] = { &hyado,&io,&hyadaruko,&baikiruto,&rukanan,&iora,&mahyado,&doragoramu,&ionazun};
+
+
+int get_random_player_id(Character *character) {
+	int count = 0;
+	while (TRUE) {
+		int random = rand() % fielddata.playernum;
+		if (character[random].HP != 0)return random;
+		if (count++ == 100) return -1;
+	}
+}
+
+
+int enemy_dyrect_attack(int id,Character* character,int target) {
+	int damageBase = (character[id].strength / 2 - character[target].endurance / 4);
+	int damageMin = damageBase * 7 / 8;
+	int damageMax = damageBase * 9 / 8;
+	int damage = damageMin + rand() % (damageMax - damageMin);
+
+	if (damage <= 0)damage = 0;
+
+	character[target].HP-=damage;
+	if (character[target].HP < 0)character[target].HP = 0;
+	return damage;
+}
+
+void estark_init(int id,Character* character) {
+	printf("estark_init");
+	character[id].can_action = TRUE;
+	character[id].base_strength = 450;
+	character[id].agility = 85;
+	character[id].base_endurance = 250;
+	character[id].maxHP = 9000;
+	character[id].HP = character[id].maxHP;
+}
+
+void estark_action(int id,Character *characters) {
+	// 2回攻撃
+	printf("estarc_action_start");
+	int attack_count = 0;
+	int damageBase, damageMin, damageMax, damage;
+
+	for (int attack_count = 0; attack_count < 2; attack_count++)
+	{
+		int target = get_random_player_id(characters);
+		if (target == -1)return;
+		switch (rand() % 6)
+		{
+		case 0:
+			if (characters[0].HP == 0 && characters[1].HP == 0 && characters[2].HP == 0 && characters[3].HP == 0)break;
+
+			damageBase = characters[id].base_strength / 2 - characters[target].defense / 4;
+			damageMin = damageBase * 7 / 8;
+			damageMax = damageBase * 9 / 8;
+			damage = damageMin + rand() % (damageMax - damageMin);
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sのこうげき　　　　　　　｜\n", playerName[id]);
+			printf("＋―――――――――――――――――＋\n");
+			characters[target].HP -= damage;
+			if (characters[target].HP < 0)
+				characters[target].HP = 0;
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sは%sに　　　　　｜\n", playerName[id], playerName[target]);
+			printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+			printf("＋―――――――――――――――――＋\n");
+			break;
+		case 1:
+			damageMin = 72;
+			damageMax = 88;
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sはイオナズンをとなえた　｜\n", playerName[id]);
+			printf("＋―――――――――――――――――＋\n");
+			for (int i = 0; i < fielddata.playernum; i++)
+			{
+				damage = damageMin + rand() % (damageMax - damageMin);
+				characters[i].HP -= damage;
+				if (characters[i].HP < 0)
+					characters[i].HP = 0;
+			}
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sはプレイヤー全員に　　　｜\n", playerName[id]);
+			printf("｜%dのダメージを与えた　　　　　　      ｜\n", damage);
+			printf("＋―――――――――――――――――＋\n");
+			break;
+		case 2:
+			damageMin = 150;
+			damageMax = 170;
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sは灼熱の炎をとなえた　　｜\n", playerName[id]);
+			printf("＋―――――――――――――――――＋\n");
+			for (int i = 0; i < fielddata.playernum; i++)
+			{
+				damage = damageMin + rand() % (damageMax - damageMin);
+				characters[i].HP -= damage * characters[i].bless;
+				if (characters[i].HP < 0)
+					characters[i].HP = 0;
+			}
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sはプレイヤー全員に　　　｜\n", playerName[id]);
+			printf("｜%dのダメージを与えた　　　　　　　　　｜\n", damage);
+			printf("＋―――――――――――――――――＋\n");
+			break;
+		case 3:
+			damageMin = 120;
+			damageMax = 140;
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sは輝く息をとなえた　　　｜\n", playerName[id]);
+			printf("＋―――――――――――――――――＋\n");
+			for (int i = 0; i < 4; i++)
+			{
+				damage = damageMin + rand() % (damageMax - damageMin);
+				characters[i].HP -= damage * characters[i].bless;
+				if (characters[i].HP < 0)
+					characters[i].HP = 0;
+			}
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sはプレイヤー全員に　　　｜\n", playerName[id]);
+			printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+			printf("＋―――――――――――――――――＋\n");
+			break;
+		case 4:
+			target = rand() % 4;
+			damageMin = 92;
+			damageMax = 128;
+			damage = damageMin + rand() % (damageMax - damageMin);
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sはメラゾーマをとなえた　｜\n", playerName[id]);
+			printf("＋―――――――――――――――――＋\n");
+			characters[target].HP -= damage;
+			if (characters[target].HP < 0)
+				characters[target].HP = 0;
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sは%sに　　　　　｜\n", playerName[id], playerName[target]);
+			printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+			printf("＋―――――――――――――――――＋\n");
+			break;
+		case 5:
+			printf("＋――――――――――――――――――＋\n");
+			printf("｜%sは凍てつく波動をとなえた　｜\n", playerName[id]);
+			printf("＋――――――――――――――――――＋\n");
+			for (int i = 0; i < fielddata.playernum; i++) {
+				characters[i].strength = characters[i].base_strength;
+				characters[i].endurance = characters[i].base_endurance;
+				characters[i].bless = 1;
+			}
+			printf("＋――――――――――――――――――＋\n");
+			printf("｜プレイヤー全員にかかっている　　　　｜\n");
+			printf("｜良い効果が消えた　　　　　　　　　　｜\n");
+			printf("＋――――――――――――――――――＋\n");
+			break;
+		}
+	}
+}
+
+
+void message_disp(int id,int target,int damage) {
+	printf("＋―――――――――――――――――＋\n");
+	printf("｜%sのこうげき　　　　　　　｜\n", playerName[id]);
+	printf("＋―――――――――――――――――＋\n");
+	printf("＋―――――――――――――――――＋\n");
+	printf("｜%sは%sに　　　　　｜\n", playerName[id], playerName[target]);
+	printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+	printf("＋―――――――――――――――――＋\n");
+}
+void suraimu_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 7;
+	character[id].agility = 3;
+	character[id].base_endurance = 5;
+	character[id].maxHP = 7;
+	character[id].HP = character[id].maxHP;
+}
+void suraimu_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage=enemy_dyrect_attack(id, character, target);
+	message_disp(id,target,damage);
+}
+
+Enemy suraimu = { suraimu_init,suraimu_attack };
+Enemy estark = { estark_init,estark_action};
+Enemy *enemies[5];
+//力，素早さ，身の守り，maxHP，maxMP
 
 
 
 
+
+void hero_init(int id, Character* character, int level) {
+
+	character[id].base_strength = 149;
+	character[id].agility = 102;
+	character[id].base_endurance = 45;
+	character[id].maxHP = 340;
+	character[id].maxMP = 170;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].attack = character[id].strength + 130;
+	character[id].defense = character[id].endurance + 235;
+	character[id].HP = character[id].maxHP;
+	character[id].MP = character[id].maxMP;
+	character[id].spells = presetspell1;
+}
+void bianka_init(int id, Character* character, int level) {
+
+	character[id].base_strength = 55;
+	character[id].agility = 120;
+	character[id].base_endurance = 68;
+	character[id].maxHP = 291;
+	character[id].maxMP = 290;
+
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].attack = character[id].strength + 100;
+	character[id].defense = character[id].endurance + 157;
+	character[id].HP = character[id].maxHP;
+	character[id].MP = character[id].maxMP;
+	character[id].spells = presetspell2;
+
+}
+void rex_init(int id, Character* character, int level) {
+
+	character[id].base_strength = 123;
+	character[id].agility = 95;
+	character[id].base_endurance = 50;
+	character[id].maxHP = 324;
+	character[id].maxMP = 180;
+
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].attack = character[id].strength + 130;
+	character[id].defense = character[id].endurance + 235;
+	character[id].HP = character[id].maxHP;
+	character[id].MP = character[id].maxMP;
+	character[id].spells = presetspell3;
+}
+void tabasa_init(int id, Character* character, int level) {
+	character[id].base_strength = 50;
+	character[id].agility = 115;
+	character[id].base_endurance = 75;
+	character[id].maxHP = 271;
+	character[id].maxMP = 190;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].attack = character[id].strength + 100;
+	character[id].defense = character[id].endurance + 180;
+	character[id].HP = character[id].maxHP;
+	character[id].MP = character[id].maxMP;
+	character[id].spells = presetspell4;
+}
+
+PresetCharacter hero = {"主人公",0,hero_init};
+PresetCharacter bianka = { "ビアンカ",1,bianka_init };
+PresetCharacter rex = { "レックス",2,rex_init };
+PresetCharacter tabasa = { "タバサ",3,tabasa_init };
+
+void field_init() {
+	fielddata.playernum = 0;
+	fielddata.enemynum = 0;
+	fielddata.fullcharacters = 0;
+}
+void add_character(PresetCharacter addCharacter, Character* character) {
+	addCharacter.init(fielddata.fullcharacters, character, 45);
+	fielddata.fullcharacters++;
+	fielddata.playernum++;
+	printf("init %s",addCharacter.name);
+}
+void add_Enemy(Enemy addCharacter, Character* character) {
+	printf("enemynum=%d",fielddata.enemynum);
+	enemies[fielddata.enemynum] = &addCharacter;
+	enemies[fielddata.enemynum]->init(fielddata.fullcharacters, character);
+	fielddata.fullcharacters++;
+	fielddata.enemynum++;
+}
+
+
+
+
+//キャラクター設定
+void init(Character* character)
+{
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character(hero, character);
+	add_character(bianka, character);
+	add_character(rex, character);
+	add_character(tabasa, character);
+	add_Enemy(suraimu, character);
+}
+
+
+
+
+
+
+void status_poison(Character *character)
+{
+	for (int i = 0; i < fielddata.playernum; i++)
+	{
+		if (character[i].poison)
+		{
+			character[i].HP -= (character[i].maxHP / 6);
+			printf("＋――――――――――――――――――――＋\n");
+			printf("｜%sは毒によるダメージを受けた　　　　　　｜\n", playerName[i]);
+			printf("＋――――――――――――――――――――＋\n");
+		}
+	}
+}
+
+
+
+void status_check(Character* character) {
+	// 毒判定
+	status_poison(character);
+	for (int i = 0; i < fielddata.playernum; i++) {
+		if (character[i].HP == 0 || character[i].sleep || character[i].paralysis) {
+			character[i].action = 0;
+			character[i].can_action = FALSE;
+		}
+		else
+			character[i].can_action = TRUE;
+	}
+}
+
+
+
+void display() {
+
+}
 
 void spell(int p_turn, BOOL wait, BOOL disp,Character* character)
 {
 	if (disp)display();
 
-	if (p_turn == 0)
-	{
-		if (character[0].action == 1)
-		{
-			if (character[0].action_spell == 0)
-			{
-				spell_hoimi(0,character);
-			}
-			else if (character[0].action_spell == 1)
-			{
-				spell_kiarii(0,character);
-			}
-			else if (character[0].action_spell == 2)
-			{
-				spell_bagi(0, character);
-			}
-			else if (character[0].action_spell == 3)
-			{
-				spell_sukara(0, character);
-			}
-			else if (character[0].action_spell == 4)
-			{
-				spell_behoimi(0, character);
-			}
-			else if (character[0].action_spell == 5)
-			{
-				spell_bagima(0, character);
-			}
-			else if (character[0].action_spell == 6)
-			{
-				spell_behoma(0, character);
-			}
-			else if (character[0].action_spell == 7)
-			{
-				spell_zaoraru(0, character);
-			}
-			else if (character[0].action_spell == 8)
-			{
-				spell_megazaru(0, character);
-			}
-			else if (character[0].action_spell == 9)
-			{
-				spell_bagikurosu(0, character);
-			}
-		}
-	}
-	else if (p_turn == 1)
-	{
-		if (character[1].action == 1)
-		{
-			if (character[1].action_spell == 0)
-			{
-				spell_mera(1, character);
-			}
-			else if (character[1].action_spell == 1)
-			{
-				spell_gira(1, character);
-			}
-			else if (character[1].action_spell == 2)
-			{
-				spell_baikiruto(1, character);
-			}
-			else if (character[1].action_spell == 3)
-			{
-				spell_begirama(1, character);
-			}
-			else if (character[1].action_spell == 4)
-			{
-				spell_merami(1, character);
-			}
-			else if (character[1].action_spell == 5)
-			{
-				spell_begiragon(1, character);
-			}
-			else if (character[1].action_spell == 6)
-			{
-				spell_merazooma(1, character);
-			}
-		}
-	}
-	else if (p_turn == 2)
-	{
-		if (character[2].action == 1)
-		{
-			if (character[2].action_spell == 0)
-			{
-				spell_sukuruto(2, character);
-			}
-			else if (character[2].action_spell == 1)
-			{
-				spell_behoimi(2, character);
-			}
-			else if (character[2].action_spell == 2)
-			{
-				spell_kiariku(2, character);
-			}
-			else if (character[2].action_spell == 3)
-			{
-				spell_behoma(2, character);
-			}
-			else if (character[2].action_spell == 4)
-			{
-				spell_hubaaha(2, character);
-			}
-			else if (character[2].action_spell == 5)
-			{
-				spell_raidein(2, character);
-			}
-			else if (character[2].action_spell == 6)
-			{
-				spell_zaoriku(2, character);
-			}
-			else if (character[2].action_spell == 7)
-			{
-				spell_behomaraa(2, character);
-			}
-			else if (character[2].action_spell == 8)
-			{
-				spell_gigadein(2, character);
-			}
-			else if (character[2].action_spell == 9)
-			{
-				spell_minadein(2, character);
-			}
-		}
-	}
-	else if (p_turn == 3)
-	{
-		if (character[3].action == 1)
-		{
-			if (character[3].action_spell == 0)
-			{
-				spell_hyado(3, character);
-			}
-			else if (character[3].action_spell == 1)
-			{
-				spell_io(3, character);
-			}
-			else if (character[3].action_spell == 2)
-			{
-				spell_hyadaruko(3, character);
-			}
-			else if (character[3].action_spell == 3)
-			{
-				spell_baikiruto(3, character);
-			}
-			else if (character[3].action_spell == 4)
-			{
-				spell_runakan(3, character);
-			}
-			else if (character[3].action_spell == 5)
-			{
-				spell_iora(3, character);
-			}
-			else if (character[3].action_spell == 6)
-			{
-				spell_mahyado(3, character);
-			}
-			else if (character[3].action_spell == 7)
-			{
-				spell_doragoramu(3, character);
-			}
-			else if (character[3].action_spell == 8)
-			{
-				spell_ionazun(3, character);
-			}
-		}
-	}
+	if(character[p_turn].spells[character[p_turn].action_spell]!=NULL)
+		character[p_turn].spells[character[p_turn].action_spell]->main(p_turn,character, character[p_turn].action_spell_target);
+
 	if (wait)_getch();
 }
-
-
 
 
 // 道具
@@ -1081,34 +985,34 @@ void tool(int playerId, BOOL wait, BOOL disp,Character* character)
 	if (disp)display();
 	if (character[playerId].action_tool == 0)
 	{
-		tool_tatakainodoramu(playerId,character);
+		tool_tatakainodoramu(playerId,character,character[playerId].action_spell_target);
 	}
 	if (wait)_getch();
 }
 
 
 
+int get_random_enemy_id() {
+	return rand() % fielddata.enemynum + fielddata.playernum;
+}
 
 
 void battle_main(Character* characters, BOOL wait, BOOL disp) {
+	printf("enter_battle_main");
 	// すばやさの比較
-	int agility[] =
-	{
-		characters[0].agility,
-		characters[1].agility,
-		characters[2].agility,
-		characters[3].agility,
-		characters[4].agility
-	};
+	int agility[10];
+	for (int i = 0; i < fielddata.fullcharacters; i++)
+		agility[i] = characters[i].agility;
+
+	int agility_id[10];
 
 
-
-	//int agility[5];
 	int action_players = 0;
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < fielddata.fullcharacters; i++)
 		if (characters[i].can_action == TRUE)
 		{
 			agility[action_players] = characters[i].agility;
+			agility_id[action_players] = i;
 			action_players++;
 		}
 
@@ -1122,6 +1026,10 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 				int d = agility[j - 1];
 				agility[j - 1] = agility[j];
 				agility[j] = d;
+
+				d = agility_id[j - 1];
+				agility_id[j - 1] = agility_id[j];
+				agility_id[j]=d;
 			}
 		}
 	}
@@ -1136,40 +1044,32 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 	int c_damageMin;
 	int c_damageMax;
 	int c_damage;
-	int em_damageMin;
-	int em_damageMax;
-	int em_damage;
 	int keep;
 	int b_turn = 0;			// バトルターン
-	int agility_count = 0;	// 行動カウント
 
 							// バトル
-	while (1)
+	for(int action_num=0;action_num<action_players;action_num++)
 	{
-		int p_turn = -1;
-		int e_turn = -1;
-		for (int i = 0; i < 4; i++) {
-			if (agility[agility_count] == characters[i].agility)p_turn = i;
-		}
-		if (agility[agility_count] == characters[4].agility)
-			e_turn = 1;
+		int p_turn = agility_id[action_num];
+
 
 		if (characters[p_turn].dragon == 1)
 		{
 			if (disp)display();
+			int target = get_random_enemy_id();
 			switch (rand() % 3)
 			{
 			case 0:
-				damageBase = characters[p_turn].attack / 2 - characters[4].base_endurance / 4;
+				damageBase = characters[p_turn].attack / 2 - characters[target].base_endurance / 4;
 				damageMin = damageBase * 7 / 8 + 60;
 				damageMax = damageBase * 9 / 8 + 60;
 				damage = damageMin + rand() % (damageMax - damageMin);
 				printf("＋―――――――――――――――――――＋\n");
 				printf("｜%sはするどいツメでこうげきした｜\n", playerName[p_turn]);
 				printf("＋―――――――――――――――――――＋\n");
-				characters[4].HP -= damage;
+				characters[target].HP -= damage;
 				printf("＋――――――――――――――――――＋\n");
-				printf("｜%sは%dのダメージをうけた｜\n", enemyName[0], damage);
+				printf("｜%sは%dのダメージをうけた｜\n", playerName[target], damage);
 				printf("＋――――――――――――――――――＋\n");
 				break;
 			default:
@@ -1179,161 +1079,27 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 				printf("＋――――――――――――――＋\n");
 				printf("｜%sはほのおをはいた　｜\n", playerName[p_turn]);
 				printf("＋――――――――――――――＋\n");
-				characters[4].HP -= damage;
+				characters[target].HP -= damage;
 				printf("＋――――――――――――――――――＋\n");
-				printf("｜%sは%dのダメージをうけた｜\n", enemyName[0], damage);
+				printf("｜%sは%dのダメージをうけた｜\n", playerName[target], damage);
 				printf("＋――――――――――――――――――＋\n");
 				break;
 			}
 			if (wait)_getch();
-			agility_count++;
-			if (agility_count == action_players)
-				break;
-			else
-				continue;
+			continue;
 		}
 
-		if (e_turn == 1)
+		if (p_turn >= fielddata.playernum)
 		{
-			// 2回攻撃
-			int attack_count = 0;
-			while (1)
-			{
-				switch (rand() % 6)
-				{
-				case 0:
-					if (characters[0].HP == 0 && characters[1].HP == 0 && characters[2].HP == 0 && characters[3].HP == 0)break;
-					while (1) {
-						keep = rand() % 4;
-						if (characters[keep].HP != 0)break;
-					}
-					damageBase = characters[4].base_strength / 2 - characters[keep].defense / 4;
-					damageMin = damageBase * 7 / 8;
-					damageMax = damageBase * 9 / 8;
-					damage = damageMin + rand() % (damageMax - damageMin);
-					if (disp)display();
-					printf("＋―――――――――――――――――＋\n");
-					printf("｜%sのこうげき　　　　　　　｜\n", enemyName[0]);
-					printf("＋―――――――――――――――――＋\n");
-					characters[keep].HP -= damage;
-					if (characters[keep].HP < 0)
-						characters[keep].HP = 0;
-					printf("＋―――――――――――――――――＋\n");
-					printf("｜%sは%sに　　　　　｜\n", enemyName[0], playerName[keep]);
-					printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
-					printf("＋―――――――――――――――――＋\n");
-					if (wait)_getch();
-					break;
-				case 1:
-					em_damageMin = 72;
-					em_damageMax = 88;
-					if (disp)display();
-					printf("＋―――――――――――――――――＋\n");
-					printf("｜%sはイオナズンをとなえた　｜\n", enemyName[0]);
-					printf("＋―――――――――――――――――＋\n");
-					for (int i = 0; i < 4; i++)
-					{
-						em_damage = em_damageMin + rand() % (em_damageMax - em_damageMin);
-						characters[i].HP -= em_damage;
-						if (characters[i].HP < 0)
-							characters[i].HP = 0;
-					}
-					printf("＋―――――――――――――――――＋\n");
-					printf("｜%sはプレイヤー全員に　　　｜\n", enemyName[0]);
-					printf("｜%dのダメージを与えた　　　　　　      ｜\n", em_damage);//yamato
-					printf("＋―――――――――――――――――＋\n");
-					if (wait)_getch();
-					break;
-				case 2:
-					em_damageMin = 150;
-					em_damageMax = 170;
-					if (disp)display();
-					printf("＋―――――――――――――――――＋\n");
-					printf("｜%sは灼熱の炎をとなえた　　｜\n", enemyName[0]);
-					printf("＋―――――――――――――――――＋\n");
-					for (int i = 0; i < 4; i++)
-					{
-						em_damage = em_damageMin + rand() % (em_damageMax - em_damageMin);
-						characters[i].HP -= em_damage * characters[i].bless;
-						if (characters[i].HP < 0)
-							characters[i].HP = 0;
-					}
-					printf("＋―――――――――――――――――＋\n");
-					printf("｜%sはプレイヤー全員に　　　｜\n", enemyName[0]);
-					printf("｜%dのダメージを与えた　　　　　　　　　｜\n", em_damage);//yamato
-					printf("＋―――――――――――――――――＋\n");
-					if (wait)_getch();
-					break;
-				case 3:
-					em_damageMin = 120;
-					em_damageMax = 140;
-					if (disp)display();
-					printf("＋―――――――――――――――――＋\n");
-					printf("｜%sは輝く息をとなえた　　　｜\n", enemyName[0]);
-					printf("＋―――――――――――――――――＋\n");
-					for (int i = 0; i < 4; i++)
-					{
-						em_damage = em_damageMin + rand() % (em_damageMax - em_damageMin);
-						characters[i].HP -= em_damage * characters[i].bless;
-						if (characters[i].HP < 0)
-							characters[i].HP = 0;
-					}
-					printf("＋―――――――――――――――――＋\n");
-					printf("｜%sはプレイヤー全員に　　　｜\n", enemyName[0]);
-					printf("｜%dのダメージを与えた　　　　　　｜\n", em_damage);//yamato
-					printf("＋―――――――――――――――――＋\n");
-					if (wait)_getch();
-					break;
-				case 4:
-					keep = rand() % 4;
-					em_damageMin = 92;
-					em_damageMax = 128;
-					em_damage = em_damageMin + rand() % (em_damageMax - em_damageMin);
-					if (disp)display();
-					printf("＋―――――――――――――――――＋\n");
-					printf("｜%sはメラゾーマをとなえた　｜\n", enemyName[0]);
-					printf("＋―――――――――――――――――＋\n");
-					characters[keep].HP -= em_damage;
-					if (characters[keep].HP < 0)
-						characters[keep].HP = 0;
-					printf("＋―――――――――――――――――＋\n");
-					printf("｜%sは%sに　　　　　｜\n", enemyName[0], playerName[keep]);
-					printf("｜%dのダメージを与えた　　　　　　｜\n", em_damage);//yamato
-					printf("＋―――――――――――――――――＋\n");
-					if (wait)_getch();
-					break;
-				case 5:
-					if (disp)display();
-					printf("＋――――――――――――――――――＋\n");
-					printf("｜%sは凍てつく波動をとなえた　｜\n", enemyName[0]);
-					printf("＋――――――――――――――――――＋\n");
-					for (int i = 0; i < 4; i++) {
-						characters[i].strength = characters[i].base_strength;
-						characters[i].endurance = characters[i].base_endurance;
-						characters[i].bless = 1;
-					}
-					printf("＋――――――――――――――――――＋\n");
-					printf("｜プレイヤー全員にかかっている　　　　｜\n");
-					printf("｜良い効果が消えた　　　　　　　　　　｜\n");
-					printf("＋――――――――――――――――――＋\n");
-					if (wait)_getch();
-					break;
-				}
-				attack_count++;
-				if (attack_count == 2)
-				{
-					attack_count = 0;
-					e_turn = 0;
-					break;
-				}
-			}
+			suraimu.attack(p_turn,characters);
 		}
 
 		else
 		{
 			if (characters[p_turn].action == 0)
 			{
-				damageBase = characters[p_turn].attack / 2 - characters[4].base_endurance / 4;
+				int target = characters[p_turn].action_spell_target;
+				damageBase = characters[p_turn].attack / 2 - characters[target].base_endurance / 4;
 				damageMin = damageBase * 7 / 8;
 				damageMax = damageBase * 9 / 8;
 				damage = damageMin + rand() % (damageMax - damageMin);
@@ -1358,22 +1124,22 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 					if (disp)display();
 					printf("＋―――――――――――――――――＋\n");
 					printf("｜会心の一撃！　　　　　　　　　　　｜\n");
-					characters[4].HP -= c_damage;
-					if (characters[4].HP < 0)
-						characters[4].HP = 0;
-					printf("｜%sは%sに　　　　　｜\n", playerName[p_turn], enemyName[0]);
+					characters[target].HP -= c_damage;
+					if (characters[target].HP < 0)
+						characters[target].HP = 0;
+					printf("｜%sは%sに　　　　　｜\n", playerName[p_turn], playerName[target]);
 					printf("｜%dのダメージを与えた　　　　　　　｜\n", c_damage);
 					printf("＋―――――――――――――――――＋\n");
 					if (wait)_getch();
 				}
 				else
 				{
-					characters[4].HP -= damage;
-					if (characters[4].HP < 0)
-						characters[4].HP = 0;
+					characters[target].HP -= damage;
+					if (characters[target].HP < 0)
+						characters[target].HP = 0;
 					if (disp)display();
 					printf("＋―――――――――――――――――＋\n");
-					printf("｜%sは%sに　　　　　｜\n", playerName[p_turn], enemyName[0]);
+					printf("｜%sは%sに　　　　　｜\n", playerName[p_turn], playerName[target]);
 					printf("｜%dのダメージを与えた　　　　　　　｜\n", damage);
 					printf("＋―――――――――――――――――＋\n");
 					if (wait)_getch();
@@ -1381,34 +1147,23 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 			}
 			else if (characters[p_turn].action == 1)
 				spell(p_turn, wait, disp,characters);
-			if (characters[4].HP < 0)
-				characters[4].HP = 0;
 			else if (characters[p_turn].action == 2)
 				tool(p_turn, wait, disp,characters);
 		}
+		for (int i = 0; i < fielddata.fullcharacters; i++)
+			if (characters[i].HP < 0)
+				characters[i].HP = 0;
 
 		b_turn++;
-		agility_count++;
 
-		if (characters[4].HP == 0)
-			break;
-		else if (characters[0].HP == 0 && characters[1].HP == 0 && characters[2].HP == 0 && characters[3].HP == 0)
-			break;
-		else if (characters[0].paralysis == 1 && characters[1].paralysis == 1 && characters[2].paralysis == 1 && characters[3].paralysis == 1)
-			break;
-		if (agility_count == action_players)
-			break;
+		BOOL enemy_alive = FALSE;
+		BOOL player_alive = FALSE;
+		for (int i = fielddata.playernum; i < fielddata.fullcharacters; i++)
+			if (characters[i].HP != 0)enemy_alive = TRUE;
+		for (int i = 0; i < fielddata.playernum; i++)
+			if (characters[i].HP != 0)player_alive = TRUE;
+
+		if (enemy_alive == FALSE)break;
+		if (player_alive == FALSE)break;
 	}
 }
-
-
-
-void input_action() {
-}
-
-
-
-
-
-
-

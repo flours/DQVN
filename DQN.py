@@ -65,13 +65,13 @@ class Agent:
     def getAction(self, state, epsilon):
         # epsilon-greedy
         if np.random.rand() < epsilon:
-            return -1
+            return 0
 
         #q_value = self.Predict(state)
         q_value = self.q_network.predict_on_batch(state)
-        q_value = self.q_network2.predict_on_batch(state)
-        q_value = self.q_network3.predict_on_batch(state)
-        q_value = self.q_network4.predict_on_batch(state)
+#        q_value = self.q_network2.predict_on_batch(state)
+#        q_value = self.q_network3.predict_on_batch(state)
+#        q_value = self.q_network4.predict_on_batch(state)
         return np.argmax(q_value)
 
     def Train(self, x_batch, y_batch):

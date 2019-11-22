@@ -1,13 +1,12 @@
 import ctypes
 import random
 
-
-class SpellData(ctypes.Structure):
+class Spell(ctypes.Structure):
     _fields_=[
-        ("name",ctypes.POINTER(ctypes.c_char_p*17)),
-        ("mp",ctypes.POINTER(ctypes.c_int32)),
-        ("isSelectTarget",ctypes.POINTER(ctypes.c_bool)),
-        ("size",ctypes.c_int32)
+        ("name",ctypes.c_wchar*(8*2+1)),
+        ("mp",ctypes.c_int32),
+        ("isSelectTarget",ctypes.c_int32),
+        ("main",ctypes.CFUNCTYPE(None,ctypes.c_int,ctypes.c_int))
     ]
 
 class Character(ctypes.Structure):
@@ -36,7 +35,7 @@ class Character(ctypes.Structure):
         ("action_spell",ctypes.c_int32),
         ("action_spell_target",ctypes.c_int32),
         ("action_tool",ctypes.c_int32),
-        ("spells",SpellData)
+        ("spells",ctypes.POINTER(Spell*20))
     ]
 
 
@@ -92,3 +91,9 @@ class DQVenv:
             self.character_data[i].action_spell = random.randint(0, self.character_data[i].spells.size-1);
             self.character_data[i].action_spell_target = random.randint(0,3);
             self.character_data[i].action_tool = 0;
+
+if __name__=='__main__':
+    env=DQVenv()
+    env.reset()
+    print(env.character_data[0].spells.contents[5].name[0:16],env.character_data[1].HP)
+    print(env.character_data[0].spells.contents[0].mp)
