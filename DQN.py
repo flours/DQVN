@@ -47,7 +47,7 @@ class Agent:
         self.max_q = 0
 
     def ModelCreate(self):
-        ip = Input(shape=(5,))
+        ip = Input(shape=(21,))
 #        h = Conv2D(32, (4,4),strides=(2,2),padding="same",activation='relu')(ip)
 #        h = Conv2D(64,(4,4),strides=(4,4),padding="same",activation='relu')(h)
 #        h = Conv2D(64,(3,3),strides=(3,3),padding="same",activation='relu')(h)
@@ -75,7 +75,7 @@ class Agent:
         return np.argmax(q_value)
 
     def Train(self, x_batch, y_batch):
-        return self.q_network.train_on_batch(x_batch.reshape(32,5), y_batch[0]),self.q_network2.train_on_batch(x_batch.reshape(32,5), y_batch[1]),self.q_network3.train_on_batch(x_batch.reshape(32,5), y_batch[2]),self.q_network4.train_on_batch(x_batch.reshape(32,5), y_batch[3])
+        return self.q_network.train_on_batch(x_batch.reshape(32,21), y_batch[0]),self.q_network2.train_on_batch(x_batch.reshape(32,21), y_batch[1]),self.q_network3.train_on_batch(x_batch.reshape(32,21), y_batch[2]),self.q_network4.train_on_batch(x_batch.reshape(32,21), y_batch[3])
 
     def Predict(self, x_batch):
         return self.t_network.predict_on_batch(x_batch),self.t_network2.predict_on_batch(x_batch),self.t_network3.predict_on_batch(x_batch),self.t_network4.predict_on_batch(x_batch)
@@ -87,17 +87,10 @@ class Agent:
 
     # 学習の結果を保存しておく
     def SaveHistory(self, episode, reward, epsilon, next_state):
-        return
-        next_state = next_state[np.newaxis,:,:,:]
-        predict = self.Predict(next_state)
-
-        msg = "[episode:" + str(episode) + " } {reward:" + str(reward) + "} {epsilon:" + str(epsilon) + "}]"
-        msg_all = str(predict.max()) + " action[" + str(predict.argmax()) + "] max_q(" + str(self.max_q) + ")\t" + str(predict) + " \t" + msg + "\n"
-
-        print(msg_all)
+        msg = "[{reward:" + str(reward) + "} {epsilon:" + str(epsilon) + "}]\n"
         # 保存
         file_history = open("history.txt", "a")
-        file_history.write(msg_all)
+        file_history.write(msg)
         file_history.close()
 
 
@@ -105,7 +98,7 @@ def CreateBatch(agent, replay_memory, batch_size, discount_rate):
     minibatch = random.sample(replay_memory, batch_size)
     state, action, reward, state2, end_flag =  map(np.array, zip(*minibatch))
 
-    x_batch = state.reshape(batch_size,5)
+    x_batch = state.reshape(batch_size,21)
     # この状態の時に各行動をした場合のQ値(y_batch変数はactionそれぞれに対するQ値)を，現在のネットワークで推定
     y_batch = agent.Predict(x_batch)
     # 今のQ値よりももっと高かったら更新
@@ -114,7 +107,7 @@ def CreateBatch(agent, replay_memory, batch_size, discount_rate):
     agent.max_q = max(agent.max_q, y_batch[2].max()) # 保存用
     agent.max_q = max(agent.max_q, y_batch[3].max()) # 保存用
     # 1つ未来における各行動に対するそれぞれのQ値
-    next_q_values = agent.Predict(state2.reshape(batch_size,5))
+    next_q_values = agent.Predict(state2.reshape(batch_size,21))
 
     for i in range(batch_size):
         # ベルマン方程式 Q(s,a) = r + gamma * max_a Q(s', a')
@@ -134,7 +127,12 @@ def RewardClipping(reward):
 
 def Preprocess(character_data):
 #    print(character_data[0].HP,character_data[1].HP,character_data[2].HP,character_data[3].HP,character_data[4].HP)
-    return np.array([character_data[0].HP,character_data[1].HP,character_data[2].HP,character_data[3].HP,character_data[4].HP]).reshape(1,5)
+    return np.array([character_data[0].HP,character_data[1].HP,character_data[2].HP,character_data[3].HP,character_data[4].HP\
+    ,character_data[0].strength,character_data[1].strength,character_data[2].strength,character_data[3].strength\
+    ,character_data[0].endurance,character_data[1].endurance,character_data[2].endurance,character_data[3].endurance\
+    ,character_data[0].attack,character_data[1].attack,character_data[2].attack,character_data[3].attack\
+    ,character_data[0].defense,character_data[1].defense,character_data[2].defense,character_data[3].defense]\
+    ).reshape(1,21)
 
 def main():
     n_episode = 12000
@@ -154,10 +152,14 @@ def main():
     
 
     # ゲーム再スタート
-    for episode in range(n_episode):
+    #for episode in range(n_episode):
+    episode=0
+    while episode>=-1:
+        episode+=1
         episode_reward = 0
         end_flag = False
-        epsilon -= reduction_epsilon
+        if min_epsilon<=epsilon:
+            epsilon -= reduction_epsilon
 
         state = env.reset()
         state = Preprocess(state)
@@ -192,11 +194,12 @@ def main():
         agent.WeightCopy()
         if episode != 0 and episode % 1000 == 0:
             agent.t_network.save_weights("weight.h5")
+            print(episode)
 
         #PrintInfo(episode, episode_reward, epsilon)
         if episode % 10 ==0:
-	        print("10epi",episode_reward,epsilon)
-
+            print("10epi",episode_reward,epsilon)
+        
         agent.SaveHistory(episode, episode_reward, epsilon, state2)
 
     env.close()
