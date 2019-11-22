@@ -87,17 +87,10 @@ class Agent:
 
     # 学習の結果を保存しておく
     def SaveHistory(self, episode, reward, epsilon, next_state):
-        return
-        next_state = next_state[np.newaxis,:,:,:]
-        predict = self.Predict(next_state)
-
-        msg = "[episode:" + str(episode) + " } {reward:" + str(reward) + "} {epsilon:" + str(epsilon) + "}]"
-        msg_all = str(predict.max()) + " action[" + str(predict.argmax()) + "] max_q(" + str(self.max_q) + ")\t" + str(predict) + " \t" + msg + "\n"
-
-        print(msg_all)
+        msg = "[{reward:" + str(reward) + "} {epsilon:" + str(epsilon) + "}]\n"
         # 保存
         file_history = open("history.txt", "a")
-        file_history.write(msg_all)
+        file_history.write(msg)
         file_history.close()
 
 
