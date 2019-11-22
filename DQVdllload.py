@@ -59,8 +59,9 @@ class DQVenv:
     def reset(self):
         self.libc.init(self.character_data)
         return self.character_data
-    def step(self,action):
-        self.setAction(action)
+    def step(self,action,target):
+        for i in range(4):
+            self.setAction(action[i],i,target[i])
         self.libc.status_check(self.character_data)
         self.libc.battle_main(self.character_data,False,False)
 
@@ -69,21 +70,20 @@ class DQVenv:
             end_flag=True
 
         reward=0
-        #for i in range(4):
-        #    reward+=self.character_data[i].HP
         reward=self.character_data[4].maxHP-self.character_data[4].HP
 
         return self.character_data, reward, end_flag, None
 
-    def setAction(self,action):
+    def setAction(self,action,id,target):
+        self.character_data[id].action_spell_target=target
         if action==0:
-            self.character_data[0].action=0
-        elif action==12:
-            self.character_data[0].action=2
-            self.character_data[0].action_tool=0
+            self.character_data[id].action=0
+        elif action==1:
+            self.character_data[id].action=2
+            self.character_data[id].action_tool=0
         else:
-            self.character_data[0].action=1
-            self.character_data[0].action_spell=action-1
+            self.character_data[id].action=1
+            self.character_data[id].action_spell=action-2
 
     def setRandomAction(self):
         for i in range(4):

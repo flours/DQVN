@@ -635,8 +635,7 @@ void tool_tatakainodoramu(int playerId, Character* character, int target) {
 }
 
 
-
-Spell *presetspell1[20] = {&hoimi,&kiarii,&bagi,&sukara,&behoimi,&bagima,&behoma,&zaoraru,&megazaru,&bagikurosu};
+Spell *(presetspell1[20]) = {&hoimi,&kiarii,&bagi,&sukara,&behoimi,&bagima,&behoma,&zaoraru,&megazaru,&bagikurosu};
 Spell *presetspell2[20] = {&mera,&gira,&baikiruto,&begirama,&merami,&begiragon,&merazooma};
 Spell *presetspell3[20] = { &sukuruto,&behoimi,&kiariku,&behoma,&hubaaha,&raidein,&zaoriku,&behomaraa,&gigadein,&minadein};
 Spell *presetspell4[20] = { &hyado,&io,&hyadaruko,&baikiruto,&rukanan,&iora,&mahyado,&doragoramu,&ionazun};
@@ -823,7 +822,12 @@ Enemy *enemies[5];
 //力，素早さ，身の守り，maxHP，maxMP
 
 
-
+void spell_copy(Spell *dst[20],Spell *src[20]) {
+	for (int i = 0; i < 20; i++)
+	{
+		dst[i] = src[i];
+	}
+}
 
 
 void hero_init(int id, Character* character, int level) {
@@ -839,7 +843,7 @@ void hero_init(int id, Character* character, int level) {
 	character[id].defense = character[id].endurance + 235;
 	character[id].HP = character[id].maxHP;
 	character[id].MP = character[id].maxMP;
-	character[id].spells = presetspell1;
+	spell_copy(character[id].spells ,presetspell1);
 }
 void bianka_init(int id, Character* character, int level) {
 
@@ -855,7 +859,7 @@ void bianka_init(int id, Character* character, int level) {
 	character[id].defense = character[id].endurance + 157;
 	character[id].HP = character[id].maxHP;
 	character[id].MP = character[id].maxMP;
-	character[id].spells = presetspell2;
+	spell_copy(character[id].spells , presetspell2);
 
 }
 void rex_init(int id, Character* character, int level) {
@@ -872,7 +876,7 @@ void rex_init(int id, Character* character, int level) {
 	character[id].defense = character[id].endurance + 235;
 	character[id].HP = character[id].maxHP;
 	character[id].MP = character[id].maxMP;
-	character[id].spells = presetspell3;
+	spell_copy(character[id].spells, presetspell3);
 }
 void tabasa_init(int id, Character* character, int level) {
 	character[id].base_strength = 50;
@@ -886,7 +890,7 @@ void tabasa_init(int id, Character* character, int level) {
 	character[id].defense = character[id].endurance + 180;
 	character[id].HP = character[id].maxHP;
 	character[id].MP = character[id].maxMP;
-	character[id].spells = presetspell4;
+	spell_copy(character[id].spells, presetspell4);
 }
 
 PresetCharacter hero = {"主人公",0,hero_init};

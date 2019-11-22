@@ -44,7 +44,7 @@ typedef struct
 	int action_spell;
 	int action_spell_target;
 	int action_tool;
-	Spell (*spells)[20];
+	Spell *(spells[20]);
 	
 }Character;
 
