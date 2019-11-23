@@ -13,7 +13,7 @@
 
 
 
-#define printf //
+//#define printf //
 
 
 
@@ -695,6 +695,139 @@ int get_random_player_id(Character *character) {
 }
 
 
+int isDelimiter(char p, char delim) {
+	return p == delim;
+}
+
+int split(char *dst[], char *src, char delim) {
+	int count = 0;
+	for (;;) {
+		while (isDelimiter(*src, delim)) {
+			src++;
+		}
+		if (*src == '\0') break;
+		dst[count++] = src;
+		while (*src && !isDelimiter(*src, delim)) {
+			src++;
+		}
+		if (*src == '\0') break;
+		*src++ = '\0';
+	}
+	return count;
+}
+
+//レベルとキャラを指定してbasestatusを決定
+void set_Character_base_status(int id, Character *character, char *name, int target_level)
+{
+	FILE *fp;
+	char filename[128];
+	char *sep[32];
+	sprintf(filename, "character_datas/%s_status.csv", name);
+	fp = fopen(filename, "r");
+	char line[128];
+	int level, power, agility, endurance, clevar, luck, HP, MP, exp;
+	while (fscanf(fp, "%s", line) != EOF) {
+		int count = split(sep, line, ',');
+		level = atoi(sep[0]);
+		power = atoi(sep[1]);
+		agility = atoi(sep[2]);
+		endurance = atoi(sep[3]);
+		clevar = atoi(sep[4]);
+		luck = atoi(sep[5]);
+		HP = atoi(sep[6]);
+		MP = atoi(sep[7]);
+		exp = atoi(sep[8]);
+		if (level == target_level)break;
+	}
+	if (level != target_level)printf("該当するステータスがありません:%s,%dレベル",name,target_level);
+
+
+	character[id].base_strength = power;
+	character[id].agility = agility;
+	character[id].base_endurance = endurance;
+	character[id].maxHP = HP;
+	character[id].maxMP = MP;
+
+	fclose(fp);
+}
+
+//装備品のステータスを反映させる
+void set_Character_equip_status(int id, Character *character, char *wepon_name, char *armar_name, char *helmet_name, char *shield_name)
+{
+	FILE *fp;
+	char filename[128];
+	char *sep[128];
+	char line[128];
+
+
+	sprintf(filename, "character_datas/武器.csv");
+	fp = fopen(filename, "r");
+	int strength = 0;
+	while (fscanf(fp, "%s", line) != EOF) {
+		int count = split(sep, line, ',');
+		if (!strcmp(sep[0], wepon_name)) {
+			printf("%s", sep[3]);
+			strength = atoi(sep[3]);
+			break;
+		}
+	}
+	if (strcmp(sep[0], wepon_name))printf("該当する武器がありません:%s", wepon_name);
+
+	sprintf(filename, "character_datas/よろい.csv");
+	fp = fopen(filename, "r");
+	int endurance = 0;
+	while (fscanf(fp, "%s", line) != EOF) {
+		int count = split(sep, line, ',');
+		if (!strcmp(sep[0], armar_name)) {
+			endurance = atoi(sep[3]);
+			break;
+		}
+	}
+	if (strcmp(sep[0], armar_name))printf("該当する武器がありません:%s", armar_name);
+
+
+	sprintf(filename, "character_datas/かぶと.csv");
+	fp = fopen(filename, "r");
+	while (fscanf(fp, "%s", line) != EOF) {
+		int count = split(sep, line, ',');
+		if (!strcmp(sep[0], helmet_name)) {
+			endurance += atoi(sep[3]);
+			break;
+		}
+	}
+	if (strcmp(sep[0], helmet_name))printf("該当する武器がありません:%s", helmet_name);
+
+
+	sprintf(filename, "character_datas/たて.csv");
+	fp = fopen(filename, "r");
+	while (fscanf(fp, "%s", line) != EOF) {
+		int count = split(sep, line, ',');
+		if (strcmp(sep[0], shield_name)) {
+			endurance += atoi(sep[3]);
+			break;
+		}
+	}
+	if (!strcmp(sep[0], shield_name))printf("該当する武器がありません:%s", shield_name);
+
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].attack = character[id].strength + strength;
+	character[id].defense = character[id].endurance + endurance;
+	character[id].HP = character[id].maxHP;
+	character[id].MP = character[id].maxMP;
+
+	fclose(fp);
+}
+
+
+
+
+
+
+
+
+
+
 int enemy_dyrect_attack(int id,Character* character,int target) {
 	int damageBase = (character[id].strength / 2 - character[target].endurance / 4);
 	int damageMin = damageBase * 7 / 8;
@@ -1141,18 +1274,8 @@ void spell_copy(Spell *dst[20],Spell *src[20]) {
 
 
 void hero_init(int id, Character* character, int level) {
-
-	character[id].base_strength = 149;
-	character[id].agility = 102;
-	character[id].base_endurance = 45;
-	character[id].maxHP = 340;
-	character[id].maxMP = 170;
-	character[id].strength = character[id].base_strength;
-	character[id].endurance = character[id].base_endurance;
-	character[id].attack = character[id].strength + 130;
-	character[id].defense = character[id].endurance + 235;
-	character[id].HP = character[id].maxHP;
-	character[id].MP = character[id].maxMP;
+	set_Character_base_status(id, character, "主人公", level);
+	set_Character_equip_status(id, character, "メタルキングのけん", "メタルキングよろい", "メタルキングヘルム","メタルキングのたて");
 	spell_copy(character[id].spells ,presetspell1);
 }
 void bianka_init(int id, Character* character, int level) {
