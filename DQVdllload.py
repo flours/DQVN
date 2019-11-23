@@ -35,7 +35,8 @@ class Character(ctypes.Structure):
         ("action_spell",ctypes.c_int32),
         ("action_spell_target",ctypes.c_int32),
         ("action_tool",ctypes.c_int32),
-        ("spells",ctypes.POINTER(Spell)*20)
+        ("spells",ctypes.POINTER(Spell)*20),
+        ("name",ctypes.c_wchar*(10*2+1)),
     ]
 
 

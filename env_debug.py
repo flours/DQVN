@@ -4,15 +4,10 @@ from msvcrt import getch
 #45レベ　主人公ビアンカレックスタバサの前提
 
 env=DQVenv()
-env.reset()
+data=env.reset()
 
 
-preset_spells=[["ホイミ","キアリー","バギ","スカラ","バギマ","ベホマ","ザオラル","メガザル","バイキルト"],
-              ["メラ","バイキルト","ベギラマ","メラミ","ベギラゴン","メラゾーマ"],
-              ["スクルト","ベホイミ","キアリク","ベホマ","フバーハ","ライデイン","ザオリク","ベホマラー","ギガデイン","ミナデイン"],
-              ["ヒャド","イオ","ヒャダルコ","バイキルト","ルカナン","イオラ","マヒャド","ドラゴラム","イオナズン"]]
 
-chara_names=["主人公","ビアンカ","レックス","タバサ","スライム"]
 
 playernum=4
 enemynum=1
@@ -72,6 +67,7 @@ def dispAll(playerdata):
     print(playerdata.action,"action")
     print(playerdata.action_spell,"action_spell")
     print(playerdata.action_tool,"action_tool")
+    print(playerdata.name,"name")
     print("spells")
     try:
         for i in range(20):
@@ -82,16 +78,35 @@ def dispAll(playerdata):
     except:
         pass
 
+def get_spell_list(playerdata):
+    names=[]
+    try:
+        for i in range(20):
+            names.append(playerdata.spells[i].contents.name)
+    except:
+        pass
+    return names
+    
+def get_name_list(playerdatas):
+    names=[]
+    try:
+        for i in range(12):
+            names.append(playerdatas[i].name)
+    except:
+        pass
+    return names
+    
+    
 while True:
     actions=[]
     targets=[]
-    
-    for i in range(4):
+    for i in range(playernum):
+        print("-------------------------------"+data[i].name+"の行動選択--------------------------------")
         action=select(["たたかう","どうぐ","じゅもん"])
         if action==2:
-            action+=select(preset_spells[i])
+            action+=select(get_spell_list(data[i]))
         print("対象(対象選択意味ないやつでも表示してる)")
-        target=select(chara_names)
+        target=select(get_name_list(data))
         actions.append(action)
         targets.append(target)
     data,reward,end_flag,_=env.step(actions,targets)

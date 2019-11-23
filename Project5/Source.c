@@ -718,6 +718,7 @@ void estark_init(int id,Character* character) {
 	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 9000;
 	character[id].HP = character[id].maxHP;
+	strcpy(character[id].name,L"エスターク");
 }
 
 void estark_action(int id,Character *characters) {
@@ -1108,23 +1109,23 @@ void snowqueen_attack(int id, Character* character) {
 }
 
 //Enemy  = {_init,_attack};
-Enemy suraimu = { suraimu_init,suraimu_attack };//スライム
+Enemy suraimu = { suraimu_init,suraimu_attack ,L"スライム"};//スライム
 
-Enemy kubinagaweasel = { kubinagaweasel_init,kubinagaweasel_attack };//くびながイタチ
-Enemy prisoncat = { prisoncat_init,prisoncat_attack };//プリズニャン・味方1lvのステータス
-Enemy bubbleslime = { bubbleslime_init,bubbleslime_attack };//バブルスライム
-Enemy ghost = { ghost_init,ghost_attack };//ゴースト
-Enemy obakevcandle = { obakevcandle_init,obakevcandle_attack };//おばけキャンドル
-Enemy oyabunghost = { oyabunghost_init,oyabunghost_attack };//BOSSおやぶんゴースト
+Enemy kubinagaweasel = { kubinagaweasel_init,kubinagaweasel_attack ,L"くびながイタチ" };//くびながイタチ
+Enemy prisoncat = { prisoncat_init,prisoncat_attack ,L"プリズニャン" };//プリズニャン・味方1lvのステータス
+Enemy bubbleslime = { bubbleslime_init,bubbleslime_attack ,L"バブルスライム" };//バブルスライム
+Enemy ghost = { ghost_init,ghost_attack, L"ゴースト" };//ゴースト
+Enemy obakevcandle = { obakevcandle_init,obakevcandle_attack, L"おばけキャンドル" };//おばけキャンドル
+Enemy oyabunghost = { oyabunghost_init,oyabunghost_attack, L"おやぶんゴースト" };//BOSSおやぶんゴースト
 
-Enemy soilchild= { soilchild_init,soilchild_attack };//つちわらし
-Enemy meralizard= { meralizard_init,meralizard_attack };//メラリザード
-Enemy nightsplit = { nightsplit_init,nightsplit_attack };//ナイトウィップス
-Enemy gappurin= { gappurin_init,gappurin_attack };//ガップリン
-Enemy sabotenball= { sabotenball_init,sabotenball_attack };//サボテンボール
-Enemy witch= { witch_init,witch_attack };//まほうつかい
-Enemy zairu = { zairu_init,zairu_attack };//ザイル
-Enemy snowqueen= { snowqueen_init,snowqueen_attack };//ゆきのじょうおう
+Enemy soilchild= { soilchild_init,soilchild_attack, L"つちわらし" };//つちわらし
+Enemy meralizard= { meralizard_init,meralizard_attack, L"メラリザード" };//メラリザード
+Enemy nightsplit = { nightsplit_init,nightsplit_attack, L"ナイトウィップス" };//ナイトウィップス
+Enemy gappurin= { gappurin_init,gappurin_attack, L"ガップリン" };//ガップリン
+Enemy sabotenball= { sabotenball_init,sabotenball_attack , L"サボテンボール" };//サボテンボール
+Enemy witch= { witch_init,witch_attack, L"まほうつかい" };//まほうつかい
+Enemy zairu = { zairu_init,zairu_attack , L"ザイル" };//ザイル
+Enemy snowqueen= { snowqueen_init,snowqueen_attack , L"ゆきのじょうおう" };//ゆきのじょうおう
 
 Enemy estark = { estark_init,estark_action};
 Enemy *enemies[5];
@@ -1203,10 +1204,10 @@ void tabasa_init(int id, Character* character, int level) {
 	spell_copy(character[id].spells, presetspell4);
 }
 
-PresetCharacter hero = {"主人公",0,hero_init};
-PresetCharacter bianka = { "ビアンカ",1,bianka_init };
-PresetCharacter rex = { "レックス",2,rex_init };
-PresetCharacter tabasa = { "タバサ",3,tabasa_init };
+PresetCharacter hero = {L"主人公",0,hero_init};
+PresetCharacter bianka = { L"ビアンカ",1,bianka_init };
+PresetCharacter rex = { L"レックス",2,rex_init };
+PresetCharacter tabasa = { L"タバサ",3,tabasa_init };
 
 void field_init() {
 	fielddata.playernum = 0;
@@ -1217,12 +1218,13 @@ void field_init() {
 
 void add_character(PresetCharacter addCharacter, Character* character) {
 	addCharacter.init(fielddata.fullcharacters, character, 45);
+	strcpy(character[fielddata.fullcharacters].name, addCharacter.name);
 	fielddata.fullcharacters++;
 	fielddata.playernum++;
-	printf("init %s",addCharacter.name);
 }
 void add_Enemy(Enemy addCharacter, Character* character) {
 	printf("enemynum=%d",fielddata.enemynum);
+	strcpy(character[fielddata.fullcharacters].name, addCharacter.name);
 	enemies[fielddata.enemynum] = &addCharacter;
 	enemies[fielddata.enemynum]->init(fielddata.fullcharacters, character);
 	fielddata.fullcharacters++;
