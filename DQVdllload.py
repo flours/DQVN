@@ -35,7 +35,7 @@ class Character(ctypes.Structure):
         ("action_spell",ctypes.c_int32),
         ("action_spell_target",ctypes.c_int32),
         ("action_tool",ctypes.c_int32),
-        ("spells",ctypes.POINTER(Spell*20))
+        ("spells",ctypes.POINTER(Spell)*20)
     ]
 
 
@@ -51,6 +51,9 @@ class DQVenv:
 
         self.libc.status_check.restype=None
         self.libc.status_check.argtypes=(Character*5,)
+        
+        self.playernum=4
+        self.enemynum=1
 
         self.libc.battle_main.restype=None
         self.libc.battle_main.argtypes=(Character*5,ctypes.c_bool,ctypes.c_bool)
@@ -60,6 +63,7 @@ class DQVenv:
         self.libc.init(self.character_data)
         return self.character_data
     def step(self,action,target):
+        #print(action,target,self.character_data[0].HP,self.character_data[1].HP,self.character_data[2].HP,self.character_data[3].HP,self.character_data[4].HP)
         for i in range(4):
             self.setAction(action[i],i,target[i])
         self.libc.status_check(self.character_data)
@@ -95,5 +99,3 @@ class DQVenv:
 if __name__=='__main__':
     env=DQVenv()
     env.reset()
-    print(env.character_data[0].spells.contents[5].name[0:16],env.character_data[1].HP)
-    print(env.character_data[0].spells.contents[0].mp)

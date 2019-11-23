@@ -13,7 +13,7 @@
 
 
 
-//#define printf //
+#define printf //
 
 
 
@@ -670,6 +670,8 @@ void estark_init(int id,Character* character) {
 	character[id].base_strength = 450;
 	character[id].agility = 85;
 	character[id].base_endurance = 250;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 9000;
 	character[id].HP = character[id].maxHP;
 }
@@ -807,6 +809,8 @@ void suraimu_init(int id, Character* character) {
 	character[id].base_strength = 7;
 	character[id].agility = 3;
 	character[id].base_endurance = 5;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 7;
 	character[id].HP = character[id].maxHP;
 }
@@ -929,7 +933,7 @@ void init(Character* character)
 	add_character(bianka, character);
 	add_character(rex, character);
 	add_character(tabasa, character);
-	add_Enemy(suraimu, character);
+	add_Enemy(estark, character);
 }
 
 
@@ -1103,6 +1107,10 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 			if (characters[p_turn].action == 0)
 			{
 				int target = characters[p_turn].action_spell_target;
+				if (target < 0 || target >= fielddata.fullcharacters) {
+					printf("不正なターゲット");
+					continue;
+				}
 				damageBase = characters[p_turn].attack / 2 - characters[target].base_endurance / 4;
 				damageMin = damageBase * 7 / 8;
 				damageMax = damageBase * 9 / 8;
@@ -1149,8 +1157,14 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 					if (wait)_getch();
 				}
 			}
-			else if (characters[p_turn].action == 1)
-				spell(p_turn, wait, disp,characters);
+			else if (characters[p_turn].action == 1) {
+				int target = characters[p_turn].action_spell_target;
+				if (target < 0 || target >= fielddata.fullcharacters) {
+					printf("不正なターゲット");
+					continue;
+				}
+				spell(p_turn, wait, disp, characters);
+			}
 			else if (characters[p_turn].action == 2)
 				tool(p_turn, wait, disp,characters);
 		}

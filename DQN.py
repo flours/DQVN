@@ -26,12 +26,10 @@ np.set_printoptions(suppress=True)
 file_history = open("history.txt", "w")
 file_history.close()
 
-
+import random
 class Agent:
     def __init__(self, env):
         self.env = env
-#        self.input_dim = env.observation_space.shape
-#        self.output_dim = env.action_space.n
 
         self.q_network = self.ModelCreate()
         self.q_network2 = self.ModelCreate()
@@ -48,14 +46,11 @@ class Agent:
 
     def ModelCreate(self):
         ip = Input(shape=(21,))
-#        h = Conv2D(32, (4,4),strides=(2,2),padding="same",activation='relu')(ip)
-#        h = Conv2D(64,(4,4),strides=(4,4),padding="same",activation='relu')(h)
-#        h = Conv2D(64,(3,3),strides=(3,3),padding="same",activation='relu')(h)
-#        h = Flatten()(h)
         h = Dense(256, activation='relu')(ip)
         h = Dense(512, activation='relu')(h)
         h = Dense(1024, activation='relu')(h)
-        h = Dense(12)(h)
+        #(攻撃1+道具1+スペル10)*対象8
+        h = Dense(12*8)(h)
         model = Model(ip, output=h)
 
         rmsprop = keras.optimizers.RMSprop(lr=0.00025, rho=0.95, epsilon=0.01, decay=0.0)
@@ -65,14 +60,15 @@ class Agent:
     def getAction(self, state, epsilon):
         # epsilon-greedy
         if np.random.rand() < epsilon:
-            return 0
+            return [random.randint(0,12-1) for i in range(self.env.playernum)],[random.randint(0,8-1) for i in range(self.env.playernum)]
 
-        #q_value = self.Predict(state)
-        q_value = self.q_network.predict_on_batch(state)
-#        q_value = self.q_network2.predict_on_batch(state)
-#        q_value = self.q_network3.predict_on_batch(state)
-#        q_value = self.q_network4.predict_on_batch(state)
-        return np.argmax(q_value)
+        q_value = self.Predict(state)
+        actions=[]
+        targets=[]
+        for i in range(self.env.playernum):
+            actions.append(np.argmax(q_value[i])//8)
+            targets.append(np.argmax(q_value[i])%8)
+        return actions,targets
 
     def Train(self, x_batch, y_batch):
         return self.q_network.train_on_batch(x_batch.reshape(32,21), y_batch[0]),self.q_network2.train_on_batch(x_batch.reshape(32,21), y_batch[1]),self.q_network3.train_on_batch(x_batch.reshape(32,21), y_batch[2]),self.q_network4.train_on_batch(x_batch.reshape(32,21), y_batch[3])
@@ -81,7 +77,7 @@ class Agent:
         return self.t_network.predict_on_batch(x_batch),self.t_network2.predict_on_batch(x_batch),self.t_network3.predict_on_batch(x_batch),self.t_network4.predict_on_batch(x_batch)
 
     def WeightCopy(self):
-        for i in range(5):
+        for i in range(self.env.playernum+self.env.enemynum):
             self.t_network.layers[i].set_weights(self.q_network.layers[i].get_weights())
         #self.t_network.set_weights(self.q_network.get_weights())
 
@@ -126,7 +122,6 @@ def RewardClipping(reward):
     return np.sign(reward)
 
 def Preprocess(character_data):
-#    print(character_data[0].HP,character_data[1].HP,character_data[2].HP,character_data[3].HP,character_data[4].HP)
     return np.array([character_data[0].HP,character_data[1].HP,character_data[2].HP,character_data[3].HP,character_data[4].HP\
     ,character_data[0].strength,character_data[1].strength,character_data[2].strength,character_data[3].strength\
     ,character_data[0].endurance,character_data[1].endurance,character_data[2].endurance,character_data[3].endurance\
@@ -152,14 +147,13 @@ def main():
     
 
     # ゲーム再スタート
-    #for episode in range(n_episode):
     episode=0
     while episode>=-1:
         episode+=1
         episode_reward = 0
         end_flag = False
         if min_epsilon<=epsilon:
-            epsilon -= reduction_epsilon
+            epsilon = min_epsilon
 
         state = env.reset()
         state = Preprocess(state)
@@ -167,8 +161,8 @@ def main():
         epsilon = min_epsilon + (1. - min_epsilon) * (n_episode - episode) / n_episode
         # ボールが落ちるまで
         while not end_flag:
-            action = agent.getAction(state, epsilon)
-            state2, reward, end_flag, info = env.step(action)
+            action,target = agent.getAction(state, epsilon)
+            state2, reward, end_flag, info = env.step(action,target)
             # 前処理
             state2 = Preprocess(state2)
             episode_reward += reward
