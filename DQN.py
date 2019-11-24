@@ -26,12 +26,10 @@ np.set_printoptions(suppress=True)
 file_history = open("history.txt", "w")
 file_history.close()
 
-
+import random
 class Agent:
     def __init__(self, env):
         self.env = env
-#        self.input_dim = env.observation_space.shape
-#        self.output_dim = env.action_space.n
 
         self.q_network = self.ModelCreate()
         self.q_network2 = self.ModelCreate()
@@ -47,15 +45,12 @@ class Agent:
         self.max_q = 0
 
     def ModelCreate(self):
-        ip = Input(shape=(21,))
-#        h = Conv2D(32, (4,4),strides=(2,2),padding="same",activation='relu')(ip)
-#        h = Conv2D(64,(4,4),strides=(4,4),padding="same",activation='relu')(h)
-#        h = Conv2D(64,(3,3),strides=(3,3),padding="same",activation='relu')(h)
-#        h = Flatten()(h)
+        ip = Input(shape=(28,))
         h = Dense(256, activation='relu')(ip)
         h = Dense(512, activation='relu')(h)
         h = Dense(1024, activation='relu')(h)
-        h = Dense(12)(h)
+        #(攻撃1+道具1+スペル10)*対象8
+        h = Dense(12*8)(h)
         model = Model(ip, output=h)
 
         rmsprop = keras.optimizers.RMSprop(lr=0.00025, rho=0.95, epsilon=0.01, decay=0.0)
@@ -65,23 +60,24 @@ class Agent:
     def getAction(self, state, epsilon):
         # epsilon-greedy
         if np.random.rand() < epsilon:
-            return 0
+            return [random.randint(0,12-1) for i in range(self.env.playernum)],[random.randint(0,8-1) for i in range(self.env.playernum)]
 
-        #q_value = self.Predict(state)
-        q_value = self.q_network.predict_on_batch(state)
-#        q_value = self.q_network2.predict_on_batch(state)
-#        q_value = self.q_network3.predict_on_batch(state)
-#        q_value = self.q_network4.predict_on_batch(state)
-        return np.argmax(q_value)
+        q_value = self.Predict(state)
+        actions=[]
+        targets=[]
+        for i in range(self.env.playernum):
+            actions.append(np.argmax(q_value[i])//8)
+            targets.append(np.argmax(q_value[i])%8)
+        return actions,targets
 
     def Train(self, x_batch, y_batch):
-        return self.q_network.train_on_batch(x_batch.reshape(32,21), y_batch[0]),self.q_network2.train_on_batch(x_batch.reshape(32,21), y_batch[1]),self.q_network3.train_on_batch(x_batch.reshape(32,21), y_batch[2]),self.q_network4.train_on_batch(x_batch.reshape(32,21), y_batch[3])
+        return self.q_network.train_on_batch(x_batch.reshape(32,28), y_batch[0]),self.q_network2.train_on_batch(x_batch.reshape(32,28), y_batch[1]),self.q_network3.train_on_batch(x_batch.reshape(32,28), y_batch[2]),self.q_network4.train_on_batch(x_batch.reshape(32,28), y_batch[3])
 
     def Predict(self, x_batch):
         return self.t_network.predict_on_batch(x_batch),self.t_network2.predict_on_batch(x_batch),self.t_network3.predict_on_batch(x_batch),self.t_network4.predict_on_batch(x_batch)
 
     def WeightCopy(self):
-        for i in range(5):
+        for i in range(self.env.playernum+self.env.enemynum):
             self.t_network.layers[i].set_weights(self.q_network.layers[i].get_weights())
         #self.t_network.set_weights(self.q_network.get_weights())
 
@@ -98,7 +94,7 @@ def CreateBatch(agent, replay_memory, batch_size, discount_rate):
     minibatch = random.sample(replay_memory, batch_size)
     state, action, reward, state2, end_flag =  map(np.array, zip(*minibatch))
 
-    x_batch = state.reshape(batch_size,21)
+    x_batch = state.reshape(batch_size,28)
     # この状態の時に各行動をした場合のQ値(y_batch変数はactionそれぞれに対するQ値)を，現在のネットワークで推定
     y_batch = agent.Predict(x_batch)
     # 今のQ値よりももっと高かったら更新
@@ -107,7 +103,7 @@ def CreateBatch(agent, replay_memory, batch_size, discount_rate):
     agent.max_q = max(agent.max_q, y_batch[2].max()) # 保存用
     agent.max_q = max(agent.max_q, y_batch[3].max()) # 保存用
     # 1つ未来における各行動に対するそれぞれのQ値
-    next_q_values = agent.Predict(state2.reshape(batch_size,21))
+    next_q_values = agent.Predict(state2.reshape(batch_size,28))
 
     for i in range(batch_size):
         # ベルマン方程式 Q(s,a) = r + gamma * max_a Q(s', a')
@@ -125,14 +121,23 @@ def PrintInfo(episode, reward, epsilon):
 def RewardClipping(reward):
     return np.sign(reward)
 
-def Preprocess(character_data):
-#    print(character_data[0].HP,character_data[1].HP,character_data[2].HP,character_data[3].HP,character_data[4].HP)
-    return np.array([character_data[0].HP,character_data[1].HP,character_data[2].HP,character_data[3].HP,character_data[4].HP\
-    ,character_data[0].strength,character_data[1].strength,character_data[2].strength,character_data[3].strength\
-    ,character_data[0].endurance,character_data[1].endurance,character_data[2].endurance,character_data[3].endurance\
-    ,character_data[0].attack,character_data[1].attack,character_data[2].attack,character_data[3].attack\
-    ,character_data[0].defense,character_data[1].defense,character_data[2].defense,character_data[3].defense]\
-    ).reshape(1,21)
+def Preprocess(character_data,playernum,enemynum):
+    max_playernum=4
+    max_enemynum=8
+    
+    input_chara=[]
+    
+    for i in range(playernum):
+        input_chara.extend([character_data[i].HP,character_data[i].strgitength,character_data[i].endurance,character_data[i].attack,character_data[i].defense])
+    for i in range(max_playernum - playernum):
+        input_chara.extend([0,0,0,0,0])
+    for i in range(enemynum):
+        input_chara.extend([character_data[i].HP])
+    for i in range(max_enemynum - enemynum):
+        input_chara.extend([0])
+    print(input_chara)
+    #print(np.array(input_chara).reshape(1,12))
+    return np.array(input_chara).reshape(1,28)
 
 def main():
     n_episode = 12000
@@ -152,25 +157,24 @@ def main():
     
 
     # ゲーム再スタート
-    #for episode in range(n_episode):
     episode=0
     while episode>=-1:
         episode+=1
         episode_reward = 0
         end_flag = False
         if min_epsilon<=epsilon:
-            epsilon -= reduction_epsilon
+            epsilon = min_epsilon
 
         state = env.reset()
-        state = Preprocess(state)
+        state = Preprocess(state,env.playernum,env.enemynum)
 
         epsilon = min_epsilon + (1. - min_epsilon) * (n_episode - episode) / n_episode
         # ボールが落ちるまで
         while not end_flag:
-            action = agent.getAction(state, epsilon)
-            state2, reward, end_flag, info = env.step(action)
+            action,target = agent.getAction(state, epsilon)
+            state2, reward, end_flag, info = env.step(action,target)
             # 前処理
-            state2 = Preprocess(state2)
+            state2 = Preprocess(state2,env.playernum,env.enemynum)
             episode_reward += reward
             # 報酬のクリッピング
             reward = RewardClipping(reward)
