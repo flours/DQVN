@@ -45,12 +45,12 @@ typedef struct
 	int action_spell_target;
 	int action_tool;
 	Spell *(spells[20]);
-	
+	wchar_t name[10 * 2 + 1];	
 }Character;
 
 
 typedef struct {
-	char name[8 * 2 + 1];
+	wchar_t name[8 * 2 + 1];
 	int id;
 	void(*init)(int id, Character* character,int level);
 	Character data;
@@ -65,6 +65,7 @@ typedef struct {
 typedef struct {
 	void(*init)(int id, Character* character);
 	void(*attack)(int id, Character* character);
+	wchar_t name[10 * 2 + 1];
 }Enemy;
 
 
