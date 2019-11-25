@@ -12,6 +12,8 @@
 #include <locale.h>
 
 
+#define SPELL_MAX 256
+
 
 #define printf //
 
@@ -878,6 +880,8 @@ Spell *presetspell2[20] = {&mera,&gira,&baikiruto,&begirama,&merami,&begiragon,&
 Spell *presetspell3[20] = { &sukuruto,&behoimi,&kiariku,&behoma,&hubaaha,&raidein,&zaoriku,&behomaraa,&gigadein,&minadein};
 Spell *presetspell4[20] = { &hyado,&io,&hyadaruko,&baikiruto,&rukanan,&iora,&mahyado,&doragoramu,&ionazun};
 
+
+Spell *(all_spell[SPELL_MAX]) = {&hoimi,&kiarii,&bagi,&sukara,&behoimi,&bagima,&behoma,&zaoraru,&megazaru,&bagikurosu,&mera,&gira,&baikiruto,&begirama,&merami,&begiragon,&merazooma,&sukuruto,&kiariku,&hubaaha,&raidein,&zaoriku,&behomaraa,&gigadein,&minadein,&hyado,&io,&hyadaruko,&rukanan,&iora,&mahyado,&doragoramu,&ionazun,&rukani,&mahotora};
 
 int get_random_player_id(Character *character) {
 	int count = 0;
@@ -2644,12 +2648,25 @@ Enemy estark = { estark_init,estark_action};//エスターク
 Enemy *enemies[5];
 
 
+
+
+void set_spellset(int id, Character *character, char *name,int level) {
+
+
+	//ファイル読み込み
+	//if atoi(x)<level:add
+
+}
+
 void spell_copy(Spell *dst[20],Spell *src[20]) {
 	for (int i = 0; i < 20; i++)
 	{
 		dst[i] = src[i];
 	}
 }
+
+
+
 
 
 void hero_init(int id, Character* character, int level) {
