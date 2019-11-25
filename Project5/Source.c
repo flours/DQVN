@@ -9,6 +9,7 @@
 #include<stdlib.h>
 #include<conio.h>
 #include<time.h>
+#include<locale.h>
 
 
 #define SPELL_MAX 256
@@ -686,7 +687,6 @@ Spell *presetspell2[20] = {&mera,&gira,&baikiruto,&begirama,&merami,&begiragon,&
 Spell *presetspell3[20] = { &sukuruto,&behoimi,&kiariku,&behoma,&hubaaha,&raidein,&zaoriku,&behomaraa,&gigadein,&minadein};
 Spell *presetspell4[20] = { &hyado,&io,&hyadaruko,&baikiruto,&rukanan,&iora,&mahyado,&doragoramu,&ionazun};
 
-
 Spell *(all_spell[SPELL_MAX]) = {&hoimi,&kiarii,&bagi,&sukara,&behoimi,&bagima,&behoma,&zaoraru,&megazaru,&bagikurosu,&mera,&gira,&baikiruto,&begirama,&merami,&begiragon,&merazooma,&sukuruto,&kiariku,&hubaaha,&raidein,&zaoriku,&behomaraa,&gigadein,&minadein,&hyado,&io,&hyadaruko,&rukanan,&iora,&mahyado,&doragoramu,&ionazun,&rukani,&mahotora};
 
 int get_random_player_id(Character *character) {
@@ -1271,11 +1271,40 @@ Enemy *enemies[5];
 
 
 
-void set_spellset(int id, Character *character, char *name,int level) {
+void set_spells(int id, Character *character, char *name,int char_level) {
+	FILE *fp;
+	char filename[128];
+	char *sep[32];
+	sprintf(filename, "C:/Users/recf6/Desktop/dqvn_env/DQVN/character_datas/%sspell.csv", name);
+	fp = fopen(filename, "r");
+	char line[128], spell_name[32];
+	int level;
 
+	int magic_num = 0;
 
-	//ファイル読み込み
-	//if atoi(x)<level:add
+	while (fscanf(fp, "%s", line) != EOF) {
+		int count = split(sep, line, ',');
+		level = atoi(sep[0]);
+		if (char_level >= level)
+		{
+			for (int i = 0; i < SPELL_MAX; i++) {
+				if (all_spell[i] == NULL) {
+					continue;
+				}
+				wchar_t target_name[32]= L"";
+				strcpy_s(target_name, 32,all_spell[i]->name);
+
+				wcstombs_s(NULL, spell_name, 32, target_name, _TRUNCATE);
+				if (!strcmp(spell_name, sep[1]))
+				{
+					character->spells[magic_num] = all_spell[i];
+					magic_num++;
+				}
+			}
+		}
+	}
+	fclose(fp);
+
 
 }
 
@@ -1293,7 +1322,7 @@ void spell_copy(Spell *dst[20],Spell *src[20]) {
 void hero_init(int id, Character* character, int level) {
 	set_Character_base_status(id, character, "主人公", level);
 	set_Character_equip_status(id, character, "メタルキングのけん", "メタルキングよろい", "メタルキングヘルム","メタルキングのたて");
-	spell_copy(character[id].spells ,presetspell1);
+	set_spells(id, character, "主人公", level);
 }
 void bianka_init(int id, Character* character, int level) {
 
@@ -1362,6 +1391,7 @@ void add_character(PresetCharacter addCharacter, Character* character) {
 	fielddata.fullcharacters++;
 	fielddata.playernum++;
 }
+
 void add_Enemy(Enemy addCharacter, Character* character) {
 	printf("enemynum=%d",fielddata.enemynum);
 	strcpy(character[fielddata.fullcharacters].name, addCharacter.name);
@@ -1373,14 +1403,39 @@ void add_Enemy(Enemy addCharacter, Character* character) {
 
 
 
+void player_character_init(int id, Character* character, int level,char* name) {
+	set_Character_base_status(id, character, name, level);
+	set_spells(id, character, name, level);
+}
+
+void add_character_from_name(Character* character,char* name,int level) {
+	player_character_init(fielddata.fullcharacters, character, level,name);
+	mbstowcs_s(NULL,character[fielddata.fullcharacters].name,21,name, _TRUNCATE);
+	strcpy(playerName[fielddata.fullcharacters], name);
+	fielddata.fullcharacters++;
+	fielddata.playernum++;
+}
+
+void add_character_from_name_and_equip(Character* character, char* name, int level,char *wepon,char* armar,char* helmet,char* sheild) {
+	player_character_init(fielddata.fullcharacters, character, level, name);
+	set_Character_equip_status(fielddata.fullcharacters, character, wepon, armar, helmet, sheild);
+
+	mbstowcs_s(NULL, character[fielddata.fullcharacters].name, 21, name, _TRUNCATE);
+	strcpy(playerName[fielddata.fullcharacters], name);
+	fielddata.fullcharacters++;
+	fielddata.playernum++;
+}
+
 
 //キャラクター設定
 void init(Character* character)
 {
+	setlocale(LC_ALL, "japanese");
+
 	field_init();
 	//addCharacterすべてしてからaddEnemy
-	add_character(hero, character);
-	add_character(bianka, character);
+	add_character_from_name_and_equip(character, "主人公", 45,"メタルキングのけん","メタルキングよろい","メタルキングヘルム","メタルキングのたて");
+	//裸ならadd_character_from_name(character, "主人公", 45)
 	add_Enemy(kubinagaweasel, character);
 	add_Enemy(prisoncat, character);
 	add_Enemy(prisoncat, character);
