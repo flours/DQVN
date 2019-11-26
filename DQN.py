@@ -45,10 +45,10 @@ class Agent:
         self.max_q = 0
 
     def ModelCreate(self):
-        ip = Input(shape=(28,))
+        ip = Input(shape=(30,))
         h = Dense(256, activation='relu')(ip)
         h = Dense(512, activation='relu')(h)
-        h = Dense(1024, activation='relu')(h)
+#        h = Dense(1024, activation='relu')(h)
         #(攻撃1+道具1+スペル10)*対象8
         h = Dense(12*8)(h)
         model = Model(ip, output=h)
@@ -68,10 +68,11 @@ class Agent:
         for i in range(self.env.playernum):
             actions.append(np.argmax(q_value[i])//8)
             targets.append(np.argmax(q_value[i])%8)
+        print(actions)
         return actions,targets
 
     def Train(self, x_batch, y_batch):
-        return self.q_network.train_on_batch(x_batch.reshape(32,28), y_batch[0]),self.q_network2.train_on_batch(x_batch.reshape(32,28), y_batch[1]),self.q_network3.train_on_batch(x_batch.reshape(32,28), y_batch[2]),self.q_network4.train_on_batch(x_batch.reshape(32,28), y_batch[3])
+        return self.q_network.train_on_batch(x_batch.reshape(32,30), y_batch[0]),self.q_network2.train_on_batch(x_batch.reshape(32,30), y_batch[1]),self.q_network3.train_on_batch(x_batch.reshape(32,30), y_batch[2]),self.q_network4.train_on_batch(x_batch.reshape(32,30), y_batch[3])
 
     def Predict(self, x_batch):
         return self.t_network.predict_on_batch(x_batch),self.t_network2.predict_on_batch(x_batch),self.t_network3.predict_on_batch(x_batch),self.t_network4.predict_on_batch(x_batch)
@@ -94,7 +95,7 @@ def CreateBatch(agent, replay_memory, batch_size, discount_rate):
     minibatch = random.sample(replay_memory, batch_size)
     state, action, reward, state2, end_flag =  map(np.array, zip(*minibatch))
 
-    x_batch = state.reshape(batch_size,28)
+    x_batch = state.reshape(batch_size,30)
     # この状態の時に各行動をした場合のQ値(y_batch変数はactionそれぞれに対するQ値)を，現在のネットワークで推定
     y_batch = agent.Predict(x_batch)
     # 今のQ値よりももっと高かったら更新
@@ -103,7 +104,7 @@ def CreateBatch(agent, replay_memory, batch_size, discount_rate):
     agent.max_q = max(agent.max_q, y_batch[2].max()) # 保存用
     agent.max_q = max(agent.max_q, y_batch[3].max()) # 保存用
     # 1つ未来における各行動に対するそれぞれのQ値
-    next_q_values = agent.Predict(state2.reshape(batch_size,28))
+    next_q_values = agent.Predict(state2.reshape(batch_size,30))
 
     for i in range(batch_size):
         # ベルマン方程式 Q(s,a) = r + gamma * max_a Q(s', a')
@@ -128,16 +129,15 @@ def Preprocess(character_data,playernum,enemynum):
     input_chara=[]
     
     for i in range(playernum):
-        input_chara.extend([character_data[i].HP,character_data[i].strgitength,character_data[i].endurance,character_data[i].attack,character_data[i].defense])
+        input_chara.extend([character_data[i].HP,character_data[i].strength,character_data[i].endurance,character_data[i].attack,character_data[i].defense])
     for i in range(max_playernum - playernum):
         input_chara.extend([0,0,0,0,0])
     for i in range(enemynum):
-        input_chara.extend([character_data[i].HP])
+        input_chara.extend([character_data[i+playernum].HP])
     for i in range(max_enemynum - enemynum):
         input_chara.extend([0])
-    print(input_chara)
-    #print(np.array(input_chara).reshape(1,12))
-    return np.array(input_chara).reshape(1,28)
+    input_chara.extend([playernum,enemynum])
+    return np.array(input_chara).reshape(1,30)
 
 def main():
     n_episode = 12000

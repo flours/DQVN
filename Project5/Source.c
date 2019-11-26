@@ -9,25 +9,17 @@
 #include<stdlib.h>
 #include<conio.h>
 #include<time.h>
+#include <locale.h>
+
+
+
+#define printf //
 
 
 
 
-//#define printf //
 
-
-
-
-
-char playerName[][5 * 2 + 1] =
-{
-	" 主人公 ",
-	"ビアンカ",
-	"A",
-	"B",
-	"C"
-};
-
+char playerName[12][10 * 2 + 1];
 
 BattleSetting fielddata;
 
@@ -507,18 +499,20 @@ void spell_rukanan(int playerId, Character* character, int target) {
 	printf("｜%sはルカナンをとなえた　　｜\n", playerName[playerId]);
 	printf("＋―――――――――――――――――＋\n");
 	character[playerId].MP -= 4;
-	if (character[target].base_endurance == 0)
-	{
-		printf("＋――――――――――――――――――――＋\n");
-		printf("｜%sのみのまもりはもうさがらない｜\n", playerName[target]);
-		printf("＋――――――――――――――――――――＋\n");
-	}
-	else
-	{
-		character[target].base_endurance -= character[target].base_endurance / 2;
-		printf("＋―――――――――――――――――＋\n");
-		printf("｜%sのみのまもりがさがった｜\n", playerName[target]);
-		printf("＋―――――――――――――――――＋\n");
+	for (int i = 0; i < 4; i++) {
+		if (character[i].base_endurance == 0)
+		{
+			printf("＋――――――――――――――――――――＋\n");
+			printf("｜%sのみのまもりはもうさがらない｜\n", playerName[i]);
+			printf("＋――――――――――――――――――――＋\n");
+		}
+		else
+		{
+			character[i].base_endurance -= character[i].base_endurance / 2;
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sのみのまもりがさがった｜\n", playerName[i]);
+			printf("＋―――――――――――――――――＋\n");
+		}
 	}
 }
 Spell rukanan = { L"ルカナン",4,TRUE,spell_rukanan };
@@ -657,6 +651,206 @@ void spell_mahotora(int playerId, Character* character, int target) {
 Spell mahotora = { L"マホトラ",4,TRUE,spell_mahotora };
 
 
+void spell_firebress(int playerId, Character* character, int target) {
+	int damage = 0;
+	int damageMin = 40;
+	int damageMax = 60;
+	printf("＋―――――――――――――――――＋\n");
+	printf("｜%sはほのうをはいた　　　｜\n", playerName[playerId]);
+	printf("＋―――――――――――――――――＋\n");
+	for (int i = 0; i < 4; i++)//4どうする
+	{
+		damage = damageMin + rand() % (damageMax - damageMin);
+		character[i].HP -= damage;
+		if (character[i].HP < 0)
+			character[i].HP = 0;
+	}
+	printf("＋―――――――――――――――――＋\n");
+	printf("｜%sはプレイヤー全員に　　　｜\n", playerName[playerId]);
+	printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+	printf("＋―――――――――――――――――＋\n");
+}
+Spell firebress = { L"かえんのいき",0,TRUE,spell_firebress };
+
+void spell_mahokanta(int playerId, Character* character, int target) {
+	//呪文を跳ね返すバリアを張る・できてない
+}Spell mahokanta = { L"マホカンタ",4,TRUE,spell_mahokanta };
+
+void spell_yaketukuiki(int playerId, Character* character, int target) {
+	for (int i = 0; i < fielddata.playernum; i++) {
+		character[i].paralysis = TRUE;//5~9ターン
+	}
+}
+Spell yaketukuiki = { L"やけつくいき",4,TRUE,spell_yaketukuiki };
+
+void spell_shinybress(int playerId, Character* character, int target) {
+	int damageMin = 120;
+	int damageMax = 140;
+	int damage = damageMin + rand() % (damageMax - damageMin);
+	printf("＋―――――――――――――――――＋\n");
+	printf("｜%sはかがやくいきをはいた　｜\n", playerName[playerId]);
+	printf("＋―――――――――――――――――＋\n");
+	for (int i = 0; i < fielddata.playernum; i++) {
+		character[i].HP -= damage;
+		if (character[i].HP < 0)
+			character[i].HP = 0;
+		printf("＋―――――――――――――――――＋\n");
+		printf("｜%sは%sに　　　　　｜\n", playerName[playerId], playerName[i]);
+		printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+		printf("＋―――――――――――――――――＋\n");
+
+	}
+}
+Spell shinybress = { L"かがやくいき",0,TRUE,spell_shinybress };
+
+void spell_itetukuhado(int playerId, Character* character, int target) {
+	printf("＋――――――――――――――――――＋\n");
+	printf("｜%sは凍てつく波動をとなえた　｜\n", playerName[playerId]);
+	printf("＋――――――――――――――――――＋\n");
+	for (int i = 0; i < fielddata.playernum; i++) {
+		character[i].strength = character[i].base_strength;
+		character[i].endurance = character[i].base_endurance;
+		character[i].bless = 1;
+	}
+	printf("＋――――――――――――――――――＋\n");
+	printf("｜プレイヤー全員にかかっている　　　　｜\n");
+	printf("｜良い効果が消えた　　　　　　　　　　｜\n");
+	printf("＋――――――――――――――――――＋\n");
+}
+Spell itetukuhado = { L"いてつくはどう",0,TRUE,spell_itetukuhado };
+
+void spell_syakunetuhono(int playerId, Character* character, int target) {
+	int damageMin = 150;
+	int damageMax = 170;
+	int damage = damageMin + rand() % (damageMax - damageMin);
+	printf("＋―――――――――――――――――＋\n");
+	printf("｜%sはしゃくねつほのおをはいた　｜\n", playerName[playerId]);
+	printf("＋―――――――――――――――――＋\n");
+	for (int i = 0; i < fielddata.playernum; i++) {
+		character[i].HP -= damage;
+		if (character[i].HP < 0)
+			character[i].HP = 0;
+		printf("＋―――――――――――――――――＋\n");
+		printf("｜%sは%sに　　　　　｜\n", playerName[playerId], playerName[i]);
+		printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+		printf("＋―――――――――――――――――＋\n");
+	}
+
+}
+Spell syakunetuhono = { L"しゃくねつほのお",0,TRUE,spell_syakunetuhono };
+
+void spell_sweetbress(int playerId, Character* character, int target) {
+	for (int i = 0; i < fielddata.playernum; i++) {
+		printf("＋―――――――――――――――――＋\n");
+		printf("｜%sはあまいいきをはいた　｜\n", playerName[playerId]);
+		printf("＋―――――――――――――――――＋\n");
+		for (int i = 0; i < fielddata.playernum; i++) {
+			character[i].sleep = TRUE;
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sは眠った　　　　　｜\n",  playerName[i]);
+			printf("＋―――――――――――――――――＋\n");
+		}
+	}
+}
+Spell sweetbress = { L"あまいいき",0,TRUE,spell_sweetbress };
+
+void spell_poisonattack(int playerId, Character* character, int target) {
+	int damage = enemy_dyrect_attack(playerId, character, target);
+	printf("＋―――――――――――――――――＋\n");
+	printf("｜%sのどくこうげき　｜\n", playerName[playerId]);
+	printf("＋―――――――――――――――――＋\n");
+	character[target].HP -= damage;
+	character[target].poison = TRUE;
+	printf("＋―――――――――――――――――＋\n");
+	printf("｜%sは%sに　　　　　｜\n", playerName[playerId], playerName[target]);
+	printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+	printf("＋―――――――――――――――――＋\n");
+	printf("＋―――――――――――――――――＋\n");
+	printf("｜%sはどくになった     ｜\n",playerName[target]);
+	printf("＋―――――――――――――――――＋\n");
+}
+Spell poisonattack = { L"どくこうげき",0,TRUE,spell_poisonattack };
+
+void spell_rarihoo(int playerId, Character* character, int target) {
+	for (int i = 0; i < fielddata.playernum; i++) {
+		printf("＋―――――――――――――――――＋\n");
+		printf("｜%sはラリホーを唱えた　｜\n", playerName[playerId]);
+		printf("＋―――――――――――――――――＋\n");
+		for (int i = 0; i < fielddata.playernum; i++) {
+			character[i].sleep = TRUE;
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sは眠った　　　　　｜\n", playerName[i]);
+			printf("＋―――――――――――――――――＋\n");
+		}
+	}
+}
+Spell rarihoo = { L"ラリホー",3,TRUE,spell_rarihoo };
+
+void spell_bukiminahikari(int playerId, Character* character, int target) {
+	//敵グループに対して呪文や特技が効きやすくなる・できてない
+}
+Spell bukiminahikari = { L"ぶきみなひかり",0,TRUE,spell_bukiminahikari };
+
+void spell_manuusa(int playerId, Character* character, int target) {
+	//敵グループに対して通常攻撃の命中率を下げる・できてない
+}
+Spell manuusa = { L"マヌーサ",4,TRUE,spell_manuusa };
+
+void spell_hardfire(int playerId, Character* character, int target) {
+	int damageMin = 65;
+	int damageMax = 85;
+	int damage = damageMin + rand() % (damageMax - damageMin);
+	printf("＋―――――――――――――――――＋\n");
+	printf("｜%sははげしいほのおをはいた　｜\n", playerName[playerId]);
+	printf("＋―――――――――――――――――＋\n");
+	for (int i = 0; i < fielddata.playernum; i++) {
+		character[i].HP -= damage;
+		if (character[i].HP < 0)
+			character[i].HP = 0;
+		printf("＋―――――――――――――――――＋\n");
+		printf("｜%sは%sに　　　　　｜\n", playerName[playerId], playerName[i]);
+		printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+		printf("＋―――――――――――――――――＋\n");
+	}
+}
+Spell hardfire = { L"はげしいほおの",0,TRUE,spell_hardfire };
+
+void spell_kogoeruhubuki(int playerId, Character* character, int target) {
+	int damageMin = 50;
+	int damageMax = 60;
+	int damage = damageMin + rand() % (damageMax - damageMin);
+	printf("＋―――――――――――――――――＋\n");
+	printf("｜%sはこごえるふぶきをつかった　｜\n", playerName[playerId]);
+	printf("＋―――――――――――――――――＋\n");
+	for (int i = 0; i < fielddata.playernum; i++) {
+		character[i].HP -= damage;
+		if (character[i].HP < 0)
+			character[i].HP = 0;
+		printf("＋―――――――――――――――――＋\n");
+		printf("｜%sは%sに　　　　　｜\n", playerName[playerId], playerName[i]);
+		printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+		printf("＋―――――――――――――――――＋\n");
+	}
+}
+Spell kogoeruhubuki = { L"こごえるふぶき",0,TRUE,spell_kogoeruhubuki };
+
+void spell_medapani(int playerId, Character* character, int target) {
+	//(敵が使った場合)敵単体を混乱状態にする・できてない(6-9ターン)
+}
+Spell medapani = { L"メダパニ",5,TRUE,spell_medapani };
+
+void spell_mahotoon(int playerId, Character* character, int target) {
+	//敵グループに対して呪文を使用不可にする・できてない(7-10ターン)
+}
+Spell mahotoon = { L"マホトーン",3,TRUE,spell_mahotoon };
+
+void spell_namemawasi(int playerId, Character* character, int target) {
+	//敵単体を1ターン休み・できてない
+}
+Spell namemawasi = { L"なめまわし",0,TRUE,spell_namemawasi };
+
+
+
 void tool_tatakainodoramu(int playerId, Character* character, int target) {
 	printf("＋――――――――――――――――――＋\n");
 	printf("｜%sはたたかいのドラムを使った　　　　｜\n", playerName[playerId]);
@@ -725,7 +919,8 @@ void set_Character_base_status(int id, Character *character, char *name, int tar
 	sprintf(filename, "character_datas/%s_status.csv", name);
 	fp = fopen(filename, "r");
 	char line[128];
-	int level, power, agility, endurance, clevar, luck, HP, MP, exp;
+	int level=0, power = 0, agility = 0, endurance = 0, clevar = 0, luck = 0, HP = 0, MP = 0, exp = 0;
+
 	while (fscanf(fp, "%s", line) != EOF) {
 		int count = split(sep, line, ',');
 		level = atoi(sep[0]);
@@ -748,6 +943,14 @@ void set_Character_base_status(int id, Character *character, char *name, int tar
 	character[id].maxHP = HP;
 	character[id].maxMP = MP;
 
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].attack = character[id].strength;
+	character[id].defense = character[id].endurance;
+	character[id].HP = character[id].maxHP;
+	character[id].MP = character[id].maxMP;
+
+
 	fclose(fp);
 }
 
@@ -756,7 +959,7 @@ void set_Character_equip_status(int id, Character *character, char *wepon_name, 
 {
 	FILE *fp;
 	char filename[128];
-	char *sep[128];
+	char* sep[128];
 	char line[128];
 
 
@@ -772,6 +975,7 @@ void set_Character_equip_status(int id, Character *character, char *wepon_name, 
 		}
 	}
 	if (strcmp(sep[0], wepon_name))printf("該当する武器がありません:%s", wepon_name);
+	fclose(fp);
 
 	sprintf(filename, "character_datas/よろい.csv");
 	fp = fopen(filename, "r");
@@ -784,6 +988,7 @@ void set_Character_equip_status(int id, Character *character, char *wepon_name, 
 		}
 	}
 	if (strcmp(sep[0], armar_name))printf("該当する武器がありません:%s", armar_name);
+	fclose(fp);
 
 
 	sprintf(filename, "character_datas/かぶと.csv");
@@ -796,6 +1001,7 @@ void set_Character_equip_status(int id, Character *character, char *wepon_name, 
 		}
 	}
 	if (strcmp(sep[0], helmet_name))printf("該当する武器がありません:%s", helmet_name);
+	fclose(fp);
 
 
 	sprintf(filename, "character_datas/たて.csv");
@@ -955,18 +1161,7 @@ void estark_action(int id,Character *characters) {
 			printf("＋―――――――――――――――――＋\n");
 			break;
 		case 5:
-			printf("＋――――――――――――――――――＋\n");
-			printf("｜%sは凍てつく波動をとなえた　｜\n", playerName[id]);
-			printf("＋――――――――――――――――――＋\n");
-			for (int i = 0; i < fielddata.playernum; i++) {
-				characters[i].strength = characters[i].base_strength;
-				characters[i].endurance = characters[i].base_endurance;
-				characters[i].bless = 1;
-			}
-			printf("＋――――――――――――――――――＋\n");
-			printf("｜プレイヤー全員にかかっている　　　　｜\n");
-			printf("｜良い効果が消えた　　　　　　　　　　｜\n");
-			printf("＋――――――――――――――――――＋\n");
+			spell_itetukuhado(id, characters, target);
 			break;
 		}
 	}
@@ -982,6 +1177,7 @@ void message_disp(int id,int target,int damage) {
 	printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
 	printf("＋―――――――――――――――――＋\n");
 }
+
 void suraimu_init(int id, Character* character) {
 	character[id].can_action = TRUE;
 	character[id].base_strength = 7;
@@ -994,57 +1190,88 @@ void suraimu_init(int id, Character* character) {
 }
 void suraimu_attack(int id, Character* character) {
 	int target = get_random_player_id(character);
-	int damage=enemy_dyrect_attack(id, character, target);
+	int damage = enemy_dyrect_attack(id, character, target);
 	message_disp(id,target,damage);
-}
+}//スライム
 
 void kubinagaweasel_init(int id, Character* character) {
 	character[id].can_action = TRUE;
 	character[id].base_strength = 11;
 	character[id].agility = 8;
 	character[id].base_endurance = 9;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 16;
 	character[id].HP = character[id].maxHP;
 }
 void kubinagaweasel_attack(int id, Character* character) {
 	int target = get_random_player_id(character);
-	int damage = enemy_dyrect_attack(id, character, target);//通常のみ
-	message_disp(id, target, damage);
-}
+	int damage = 0;
+	switch (rand() % 2) {
+	case 0:damage =	enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_sweetbress(id, character, target);
+		break;
+	default:break;
+	}
+}//くびながイタチ
 
 void prisoncat_init(int id, Character* character) {
 	character[id].can_action = TRUE;
 	character[id].base_strength = 24;
 	character[id].agility = 20;
 	character[id].base_endurance = 18;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 26;
 	character[id].HP = character[id].maxHP;
 }
 void prisoncat_attack(int id, Character* character) {
 	int target = get_random_player_id(character);
-	int damage = enemy_dyrect_attack(id, character, target);
-	message_disp(id, target, damage);
-}
+	int damage = 0;
+	switch (rand() % 3) {
+	case 0:enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:			
+		printf("＋―――――――――――――――――＋\n");
+		printf("｜%sは様子をみた　　　　　　　｜\n", playerName[id]);
+		printf("＋―――――――――――――――――＋\n");
+		break;
+	case 2:spell_hyado(id, character, target);
+		break;
+	default:break;
+	}
+}//プリズニャン
 
 void bubbleslime_init(int id, Character* character) {
 	character[id].can_action = TRUE;
 	character[id].base_strength = 12;
 	character[id].agility = 7;
 	character[id].base_endurance = 7;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 15;
 	character[id].HP = character[id].maxHP;
 }
 void bubbleslime_attack(int id, Character* character) {
 	int target = get_random_player_id(character);
-	int damage = enemy_dyrect_attack(id, character, target);//通常のみ
-	message_disp(id, target, damage);
-}
+	int damage = 0;
+	switch (rand() % 2) {
+	case 0:enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_poisonattack(id, character, target);
+		break;
+	default:break;
+	}
+}//バブルスライム
 
 void ghost_init(int id, Character* character) {
 	character[id].can_action = TRUE;
 	character[id].base_strength = 15;
 	character[id].agility = 14;
 	character[id].base_endurance = 15;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 19;
 	character[id].HP = character[id].maxHP;
 }
@@ -1052,42 +1279,59 @@ void ghost_attack(int id, Character* character) {
 	int target = get_random_player_id(character);
 	int damage = enemy_dyrect_attack(id, character, target);//通常のみ
 	message_disp(id, target, damage);
-}
+}//ゴースト
 
 void obakevcandle_init(int id, Character* character) {
 	character[id].can_action = TRUE;
 	character[id].base_strength = 20;
 	character[id].agility = 13;
 	character[id].base_endurance = 17;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 20;
 	character[id].HP = character[id].maxHP;
 }
 void obakevcandle_attack(int id, Character* character) {
 	int target = get_random_player_id(character);
-	int damage = enemy_dyrect_attack(id, character, target);
-	message_disp(id, target, damage);
-}
+	int damage = 0;
+	switch (rand() % 2) {
+	case 0:enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_mera(id, character, target);
+		break;
+	default:break;
+	}
+}//おばけキャンドル
 
 void oyabunghost_init(int id, Character* character) {
 	character[id].can_action = TRUE;
 	character[id].base_strength = 36;
 	character[id].agility = 20;
 	character[id].base_endurance = 50;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 200;
 	character[id].HP = character[id].maxHP;
 }
 void oyabunghost_attack(int id, Character* character) {
+	static int turn_count_oyabun=1;
 	int target = get_random_player_id(character);
 	int damage = 0;//奇数ターン…通常。偶数ターン…通常・メラ・ギラ・ルカニ
-	switch(rand() % 4) {
-	case 0:damage = enemy_dyrect_attack(id, character, target);
-				message_disp(id, target, damage); break;
+	if (turn_count_oyabun % 2 == 1) {//奇数ターン
+		damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage);
+	}
+	else
+		switch(rand() % 4) {//偶数ターン
+	    case 0:damage = enemy_dyrect_attack(id, character, target);
+			message_disp(id, target, damage); break;
 		case 1:spell_mera(id, character, target); break;
 		case 2:spell_gira(id, character, target); break;
 		case 3:spell_rukani; break;
 		default: break;
 	}
-}
+	turn_count_oyabun++;
+}//おやぶんゴースト
 
 
 void soilchild_init(int id, Character* character) {
@@ -1095,62 +1339,96 @@ void soilchild_init(int id, Character* character) {
 	character[id].base_strength = 22;
 	character[id].agility = 13;
 	character[id].base_endurance = 11;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 22;
 	character[id].HP = character[id].maxHP;
 }
 void soilchild_attack(int id, Character* character) {
 	int target = get_random_player_id(character);
-	int damage = enemy_dyrect_attack(id, character, target);
-	message_disp(id, target, damage);
-}
+	int damage = 0;
+	switch (rand() % 2) {
+	case 0:enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1://仲間を呼ぶ(ホイミスライム)・できてない
+		break;
+	default:break;
+	}
+}//つちわらし
 
 void meralizard_init(int id, Character* character) {
 	character[id].can_action = TRUE;
 	character[id].base_strength = 20;
 	character[id].agility = 16;
 	character[id].base_endurance = 20;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 24;
 	character[id].HP = character[id].maxHP;
 }
 void meralizard_attack(int id, Character* character) {
 	int target = get_random_player_id(character);
-	int damage = enemy_dyrect_attack(id, character, target);
-	message_disp(id, target, damage);
-}
+	int damage = 0;
+	switch (rand() % 2) {
+	case 0:enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_mera(id, target, damage);
+		break;
+	default:break;
+	}
+}//メラリザード
 
 void nightsplit_init(int id, Character* character) {
 	character[id].can_action = TRUE;
 	character[id].base_strength = 18;
 	character[id].agility = 12;
 	character[id].base_endurance = 14;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 17;
 	character[id].HP = character[id].maxHP;
 }
 void nightsplit_attack(int id, Character* character) {
 	int target = get_random_player_id(character);
-	int damage = enemy_dyrect_attack(id, character, target);
-	message_disp(id, target, damage);
-}
+	int damage = 0;
+	switch (rand() % 2) {
+	case 0:enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_rukani(id, target, damage);
+		break;
+	default:break;
+	}
+}//ナイトウイプス
 
 void gappurin_init(int id, Character* character) {
 	character[id].can_action = TRUE;
 	character[id].base_strength = 23;
 	character[id].agility = 12;
 	character[id].base_endurance = 17;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 19;
 	character[id].HP = character[id].maxHP;
 }
 void gappurin_attack(int id, Character* character) {
 	int target = get_random_player_id(character);
-	int damage = enemy_dyrect_attack(id, character, target);
-	message_disp(id, target, damage);
-}
+	int damage = 0;
+	switch (rand() % 2) {
+	case 0:enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_rarihoo(id, target, damage);
+		break;
+	default:break;
+	}
+}//ガップリン
 
 void sabotenball_init(int id, Character* character) {
 	character[id].can_action = TRUE;
 	character[id].base_strength = 22;
 	character[id].agility = 14;
 	character[id].base_endurance = 14;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 22;
 	character[id].HP = character[id].maxHP;
 }
@@ -1158,27 +1436,41 @@ void sabotenball_attack(int id, Character* character) {
 	int target = get_random_player_id(character);
 	int damage = enemy_dyrect_attack(id, character, target);
 	message_disp(id, target, damage);
-}
+}//サボテンボール
 
 void witch_init(int id, Character* character) {
 	character[id].can_action = TRUE;
 	character[id].base_strength = 21;
 	character[id].agility = 15;
 	character[id].base_endurance = 17;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 20;
 	character[id].HP = character[id].maxHP;
 }
 void witch_attack(int id, Character* character) {
 	int target = get_random_player_id(character);
-	int damage = enemy_dyrect_attack(id, character, target);
-	message_disp(id, target, damage);
-}
+	int damage = 0;
+	switch (rand() % 4) {
+	case 0:enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_hyado(id, character, target);
+		break;
+	case 2:spell_mahotoon(id, character, target);//マホトーン・できてない
+		break;
+	case 3:spell_sukuruto(id, character,target);
+		break;
+	default:break;
+	}
+}//まほうつかい
 
 void zairu_init(int id, Character* character) {
 	character[id].can_action = TRUE;
 	character[id].base_strength = 42;
 	character[id].agility = 28;
 	character[id].base_endurance = 30;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 140;
 	character[id].HP = character[id].maxHP;
 }
@@ -1186,35 +1478,438 @@ void zairu_attack(int id, Character* character) {
 	int target = get_random_player_id(character);
 	int damage = 0;
 	switch (rand()%3) {
-	case 0:damage = enemy_dyrect_attack(id, character, target); break;
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
 	case 1:spell_mahotora(id, character, target); break;
 	case 2:spell_hoimi(id, character, target);  break;
 	defalt:break;
 	}
-    
-	message_disp(id, target, damage);
-}
+}//ザイル
 
 void snowqueen_init(int id, Character* character) {
 	character[id].can_action = TRUE;
 	character[id].base_strength = 50;
 	character[id].agility = 18;
 	character[id].base_endurance = 45;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
 	character[id].maxHP = 550;
 	character[id].HP = character[id].maxHP;
 }
 void snowqueen_attack(int id, Character* character) {
 	int target = get_random_player_id(character);
 	int damage = 0;
-	BOOL damage_up = FALSE;
-	switch (rand() % 6) {
-	case 0:damage = enemy_dyrect_attack(id, character, target); break;
+	static int turn_count_snowqueen=1;
+	if (turn_count_snowqueen%3==1) {//1ターン目・4ターン目
+		switch (rand() % 2) {
+		case 0:
+			damage = enemy_dyrect_attack(id, character, target);
+			message_disp(id, target, damage);
+			character[id].strength= character[id].base_strength;//攻撃力を元に戻す
+		case 1:
+		{
+			int damageMin = 13;
+			int damageMax = 16;
+			damage = damageMin + rand() % (damageMax - damageMin);
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sはこおりつくいきをはいた　｜\n", playerName[id]);
+			printf("＋―――――――――――――――――＋\n");
+			for (int i = 0; i < fielddata.playernum; i++) {
+				character[i].HP -= damage;
+				if (character[i].HP < 0)
+					character[i].HP = 0;
+				printf("＋―――――――――――――――――＋\n");
+				printf("｜%sは%sに　　　　　｜\n", playerName[id], playerName[i]);
+				printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+				printf("＋―――――――――――――――――＋\n");
+			}
+			character[id].strength = character[id].base_strength;//攻撃力を元に戻す
+			break;
+		}
+		default:break;
+		}
+	}
+	else if (turn_count_snowqueen % 3 == 2) {//2ターン目・5ターン目
+		switch (rand() % 2) {
+		case 0:damage = enemy_dyrect_attack(id, character, target); break;
+		case 1:spell_hyado(id, character, target); break;
+		default:break;
+		}
+	}
+	else {//3ターン目・6ターン目...
+		switch (rand() % 2){
+		case 0:spell_hoimi(id, character, target); break;
+		case 1://息を吸い込む
+			character[id].strength = character[id].base_strength * 2;//攻撃力を2倍
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sはおおきくいきをすいこんだ　｜\n", playerName[id]);
+			printf("＋―――――――――――――――――＋\n");
+			break;
+		default:break;
+		}
+	}
+	turn_count_snowqueen++;
+}//ゆきのじょうおう
+
+
+void obakekinoko_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 43;
+	character[id].agility = 24;
+	character[id].base_endurance = 37;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 35;
+	character[id].HP = character[id].maxHP;
+}
+void obakekinoko_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 2) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_sweetbress(id, character, target);
+		break;
+	default:break;
+	}
+}//おばけキノコ
+
+void evilapple_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 41;
+	character[id].agility = 19;
+	character[id].base_endurance = 35;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 30;
+	character[id].HP = character[id].maxHP;
+}
+void evilapple_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 3) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_bagi(id, character, target);
+		break;
+	case 2:
+		printf("＋―――――――――――――――――＋\n");
+		printf("｜%sは笑っている　　　　　　　｜\n", playerName[id]);
+		printf("＋―――――――――――――――――＋\n");
+		break;
+	default:break;
+	}
+}//エビルアップル
+
+void waraibag_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 33;
+	character[id].agility = 25;
+	character[id].base_endurance = 15;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 31;
+	character[id].HP = character[id].maxHP;
+}
+void waraibag_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 3) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_rarihoo(id, character, target);
+		break;
+	case 2:spell_mahotoon(id, character, target);//マホトーン・できてない
+		break;
+	case 3:spell_medapani(id, character, target);//メダパニ・できてない
+		break;
+	case 4://仲間を呼ぶ(ホイミスライム)・できてない
+		break;
+	default:break;
+	}
+}//わらいぶくろ
+
+void hoimislime_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 17;
+	character[id].agility = 15;
+	character[id].base_endurance = 20;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 35;
+	character[id].HP = character[id].maxHP;
+}
+void hoimislime_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 2) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage);break;
+	case 1:spell_hoimi(id, character, target);
+		break;
+	}
+
+}//ホイミスライム
+
+void skelsoldier_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 52;
+	character[id].agility = 20;
+	character[id].base_endurance = 50;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 42;
+	character[id].HP = character[id].maxHP;
+}
+void skelsoldier_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 2) {
+	case 0:enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_poisonattack(id, character, target);
+		break;
+	default:break;
+	}
+}//がいこつへい
+
+void falsetaiko_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 150;
+	character[id].agility = 35;
+	character[id].base_endurance = 100;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 650;
+	character[id].HP = character[id].maxHP;
+}
+void falsetaiko_attack(int id, Character* character) {
+	static int turn_count_falsetaiko = 1;
+	int target = get_random_player_id(character);
+	int damage = 0;
+	if (turn_count_falsetaiko % 3 == 1) {//1ターン・4ターン
+		switch (rand() % 2) {
+		case 0:damage = enemy_dyrect_attack(id, character, target);
+			message_disp(id, target, damage); break;
+		case 1://わらいぶくろを呼ぶ・できてない
+			break;
+		default:break;
+		}
+	}
+	else if(turn_count_falsetaiko % 3 == 2){//2ターン・5ターン
+		switch(rand() % 2) {
+		case 0:
+			character[id].strength = character[id].base_strength * 2;//攻撃力を二倍にする
+			break;
+		case 1:spell_firebress(id, target, damage);
+			break;
+		default:break;
+		}
+	}
+	else {
+		switch (rand() % 2) {//3ターン・6ターン
+		case 0:damage = enemy_dyrect_attack(id, character, target);
+			message_disp(id, target, damage);
+			character[id].strength = character[id].base_strength;//攻撃力を元に戻す
+			break;
+		case 1://がいこつ兵を呼ぶ・できてない
+			character[id].strength = character[id].base_strength;//攻撃力を元に戻す
+			break;
+		default: break;
+		}
+	}
+	turn_count_falsetaiko++;
+}//ニセたいこう
+
+void behomaslime_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 47;
+	character[id].agility = 37;
+	character[id].base_endurance = 62;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 69;
+	character[id].HP = character[id].maxHP;
+}
+void behomaslime_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 2) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_behoimi(id, character, target);
+		break;
+	}
+}//ベホマスライム
+
+void madolooper_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 91;
+	character[id].agility = 40;
+	character[id].base_endurance = 35;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 83;
+	character[id].HP = character[id].maxHP;
+}
+void madolooper_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 2) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_sukara(id, character, target);
+		break;
+	}
+}//マドルーパー
+
+void snakebat_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 79;
+	character[id].agility = 42;
+	character[id].base_endurance = 61;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 63;
+	character[id].HP = character[id].maxHP;
+}
+void snakebat_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 2) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_yaketukuiki(id, character, target);//やけつくいき
+		break;
+	}
+}//へびこうもり
+
+void kandata_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 235;
+	character[id].agility = 30;
+	character[id].base_endurance = 80;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 1400;
+	character[id].HP = character[id].maxHP;
+}
+void kandata_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 3) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1: {
+		int c_damageBase = character[id].attack;
+		int c_damageMin = c_damageBase;
+		int c_damageMax = c_damageBase * 74 / 64;
+		damage = c_damageMin + rand() % (c_damageMax - c_damageMin);
+		message_disp(id, target, damage);
+		break;//会心の一撃
+	}
+	case 2:spell_behoimi(id, character, id);
+		break;
+	default:break;
+	}
+}//カンダタ
+
+void shieldhipo_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 105;
+	character[id].agility = 45;
+	character[id].base_endurance = 120;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 90;
+	character[id].HP = character[id].maxHP;
+}
+void shieldhipo_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 2) {
+	case 0:character[id].endurance = character[id].base_endurance;
+		damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
 	case 1:
-		int damageMin = 13;
-		int damageMax = 16;
+		character[id].endurance= character[id].base_endurance*2;//防御
+		break;
+	}
+}//シールドヒッポ
+
+void oak_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 155;
+	character[id].agility = 70;
+	character[id].base_endurance = 121;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 800;
+	character[id].HP = character[id].maxHP;
+}
+void oak_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 2) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_rukanan(id, character, target);
+		break;
+	default:break;
+	}
+}//オークLv20
+
+void kimeera_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 145;
+	character[id].agility = 80;
+	character[id].base_endurance = 150;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 800;
+	character[id].HP = character[id].maxHP;
+}
+void kimeera_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	for (int attack_num = rand() % 2; 0 <= attack_num; attack_num--) {//1～2回攻撃
+		switch (rand() % 4) {
+		case 0:damage = enemy_dyrect_attack(id, character, target);
+			message_disp(id, target, damage); break;
+		case 1:
+			spell_firebress(id, character, target);
+			break;
+		case 2:spell_begirama(id, character, target);
+			break;
+		case 3:spell_hyadaruko(id, character, target);
+			break;
+		default:break;
+		}
+	}
+}//キメーラLv35
+
+void jami_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 220;
+	character[id].agility = 50;
+	character[id].base_endurance = 120;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 1200;
+	character[id].HP = character[id].maxHP;
+}
+void jami_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 4) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1: {//こごえるふぶき
+		int damageMin = 50;
+		int damageMax = 60;
 		damage = damageMin + rand() % (damageMax - damageMin);
 		printf("＋―――――――――――――――――＋\n");
-		printf("｜%sはこおりつく息をはいた　｜\n", playerName[id]);
+		printf("｜%sはこごえるいぶきをはなった　｜\n", playerName[id]);
 		printf("＋―――――――――――――――――＋\n");
 		for (int i = 0; i < fielddata.playernum; i++) {
 			character[i].HP -= damage;
@@ -1225,21 +1920,674 @@ void snowqueen_attack(int id, Character* character) {
 			printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
 			printf("＋―――――――――――――――――＋\n");
 		}
-		damage_up= FALSE;
 		break;
-	case 2:damage = enemy_dyrect_attack(id, character, target); break;
-	case 3:spell_hyado(id, character, target); break;
-	case 4:spell_hoimi(id, character, target); break;
-	case 5://息を吸い込む
-		damage_up=TRUE;
+	}
+	case 2:spell_bagikurosu(id, character, target);
+		break;
+	case 3:spell_merami(id, character, target);
+		break;
+	default:break;
+	}
+}//ジャミ
+
+void berogonload_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 95;
+	character[id].agility = 48;
+	character[id].base_endurance = 40;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 110;
+	character[id].HP = character[id].maxHP;
+}
+void berogonload_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 3) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);//直接攻撃
+		message_disp(id, target, damage); break;
+	case 1:damage = enemy_dyrect_attack(id, character, target);//酸液のツバ
+		break;
+	case 2:spell_namemawasi(id, character, target);//なめまわし・できてない
+		break;
+	default:break;
+	}
+}//ベロゴンロード
+
+void magekimera_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 82;
+	character[id].agility = 57;
+	character[id].base_endurance = 67;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 99;
+	character[id].HP = character[id].maxHP;
+}
+void magekimera_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 5) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);//直接攻撃
+		message_disp(id, target, damage); break;
+	case 1:spell_hoimi(id, character, target);
+		break;
+	case 2:spell_gira(id, character, target);
+		break;
+	case 3:spell_hyado(id, character, target);
+		break;
+	case 4:spell_manuusa(id, character, target);//マヌーサ・できてない
+		break;
+	default:break;
+	}
+}//メイジキメラ
+
+void minidaemon_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 79;
+	character[id].agility = 55;
+	character[id].base_endurance = 68;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 70;
+	character[id].HP = character[id].maxHP;
+}
+void minidaemon_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 3) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);//直接攻撃
+		message_disp(id, target, damage); break;
+	case 1:spell_merami(id, character, target);
+		break;
+	case 2:
 		printf("＋―――――――――――――――――＋\n");
-		printf("｜%sはおおきくいきをすいこんだ　｜\n", playerName[id]);
+		printf("｜%sはイオナズンを唱えた　｜\n", playerName[id]);
+		printf("＋―――――――――――――――――＋\n");
+		printf("＋―――――――――――――――――＋\n");
+		printf("｜しかしMPが足りない　              ｜\n");
 		printf("＋―――――――――――――――――＋\n");
 		break;
 	default:break;
 	}
-	message_disp(id, target, damage);
+}//ミニデーモン
+
+void messaara_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 107;
+	character[id].agility = 60;
+	character[id].base_endurance = 67;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 99;
+	character[id].HP = character[id].maxHP;
 }
+void messaara_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 3) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);//直接攻撃
+		message_disp(id, target, damage); break;
+	case 1:spell_mahotoon(id, character, target);//マホトーン・できてない
+		break;
+	case 2:spell_bukiminahikari(id, character, target);//ぶきみなひかり・できてない
+		break;
+	default:break;
+	}
+}//メッサーラ
+
+void gons_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 300;
+	character[id].agility = 80;
+	character[id].base_endurance = 135;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 2400;
+	character[id].HP = character[id].maxHP;
+}
+void gons_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	if (rand() % 2 == 0) {
+		damage = enemy_dyrect_attack(id, character, target);
+	}
+	else {
+		damage = (int)(enemy_dyrect_attack(id, character, target)*1.25);//武器を振り回す・1.25倍
+	}
+	message_disp(id, target, damage);
+}//ゴンズ
+
+void gema_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 285;
+	character[id].agility = 260;
+	character[id].base_endurance = 90;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 3800;
+	character[id].HP = character[id].maxHP;
+}
+void gema_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	for (int attack_num = rand() % 2; 0 <= attack_num; attack_num--) {//1～2回攻撃
+		switch (rand() % 4) {
+		case 0:damage = enemy_dyrect_attack(id, character, target);
+			message_disp(id, target, damage); break;
+		case 1: {//はげしいほのお
+			int damageMin = 65;
+			int damageMax = 85;
+			damage = damageMin + rand() % (damageMax - damageMin);
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sははげしいほのおをはなった　｜\n", playerName[id]);
+			printf("＋―――――――――――――――――＋\n");
+			for (int i = 0; i < fielddata.playernum; i++) {
+				character[i].HP -= damage;
+				if (character[i].HP < 0)
+					character[i].HP = 0;
+				printf("＋―――――――――――――――――＋\n");
+				printf("｜%sは%sに　　　　　｜\n", playerName[id], playerName[i]);
+				printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+				printf("＋―――――――――――――――――＋\n");
+			}
+			break;
+		}
+		case 2:spell_merazooma(id, character, target);
+			break;
+		case 3:spell_mahokanta(id, character, target);//マホカンタ・できてない
+			break;
+		default:break;
+		}
+	}
+}//ゲマ
+
+void buoon_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 300;
+	character[id].agility = 160;
+	character[id].base_endurance = 75;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 4700;
+	character[id].HP = character[id].maxHP;
+}
+void buoon_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	for (int attack_num = rand() % 2; 0 <= attack_num; attack_num--) {//1～2回攻撃
+		switch (rand() % 5) {
+		case 0:damage = enemy_dyrect_attack(id, character, target);
+			message_disp(id, target, damage); break;
+		case 1: {//はげしいほのお
+			int damageMin = 65;
+			int damageMax = 85;
+			damage = damageMin + rand() % (damageMax - damageMin);
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sははげしいほのおをはなった　｜\n", playerName[id]);
+			printf("＋―――――――――――――――――＋\n");
+			for (int i = 0; i < fielddata.playernum; i++) {
+				character[i].HP -= damage;
+				if (character[i].HP < 0)
+					character[i].HP = 0;
+				printf("＋―――――――――――――――――＋\n");
+				printf("｜%sは%sに　　　　　｜\n", playerName[id], playerName[i]);
+				printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+				printf("＋―――――――――――――――――＋\n");
+			}
+			break;
+		}
+		case 2: {//いなずま
+			int damageMin = 50;
+			int damageMax = 70;
+			damage = damageMin + rand() % (damageMax - damageMin);
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sはいなずまをはなった　｜\n", playerName[id]);
+			printf("＋―――――――――――――――――＋\n");
+			for (int i = 0; i < fielddata.playernum; i++) {
+				character[i].HP -= damage;
+				if (character[i].HP < 0)
+					character[i].HP = 0;
+				printf("＋―――――――――――――――――＋\n");
+				printf("｜%sは%sに　　　　　｜\n", playerName[id], playerName[i]);
+				printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+				printf("＋―――――――――――――――――＋\n");
+			}
+			break;
+		}
+			break;
+		case 3:spell_sukara(id, character, target);
+			break;
+		case 4:spell_rukanan(id, character, target);
+		default:break;
+		}
+	}
+}//ブオーン
+
+void izrairu_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 140;
+	character[id].agility = 69;
+	character[id].base_endurance = 121;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 135;
+	character[id].HP = character[id].maxHP;
+}
+void izrairu_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 3) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);//直接攻撃
+		message_disp(id, target, damage); break;
+	case 1:spell_behomaraa(id, character, target);//ベホマラー
+		break;
+	case 2:spell_firebress(id, target, damage);//かえんのいき
+		break;
+	default:break;
+	}
+}//イズライール
+
+void ramada_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 300;
+	character[id].agility = 55;
+	character[id].base_endurance = 180;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 3500;
+	character[id].HP = character[id].maxHP;
+}
+void ramada_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 4) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1: {//はげしいほのお
+		int damageMin = 65;
+		int damageMax = 85;
+		damage = damageMin + rand() % (damageMax - damageMin);
+		printf("＋―――――――――――――――――＋\n");
+		printf("｜%sははげしいほのおをはなった　｜\n", playerName[id]);
+		printf("＋―――――――――――――――――＋\n");
+		for (int i = 0; i < fielddata.playernum; i++) {
+			character[i].HP -= damage;
+			if (character[i].HP < 0)
+				character[i].HP = 0;
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sは%sに　　　　　｜\n", playerName[id], playerName[i]);
+			printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+			printf("＋―――――――――――――――――＋\n");
+		}
+		break;
+	}
+	case 2:spell_begiragon(id, character, target);
+		break;
+	case 3:spell_mahyado(id, character, target);
+		break;
+	default:break;
+	}
+}//ラマダ
+
+void iburu_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 21;
+	character[id].agility = 73;
+	character[id].base_endurance = 240;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 4200;
+	character[id].HP = character[id].maxHP;
+}
+void iburu_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	static int turn_count_snowqueen = 1;
+	if (turn_count_snowqueen % 3 == 1) {//1ターン目・4ターン目
+		switch (rand() % 2) {
+		case 0: spell_shinybress(id, character, target);
+			break;
+		case 1:
+			spell_mahokanta(id, character, target);
+		default:break;
+		}
+	}
+	else if (turn_count_snowqueen % 3 == 2) {//2ターン目・5ターン目
+		switch (rand() % 2) {
+		case 0:			
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sは%sにつうこんないちげき　｜\n", playerName[id], playerName[target]);
+			printf("＋―――――――――――――――――＋\n"); 
+			character[target].HP -= 105;
+			break;
+		case 1:character[id].endurance = character[id].base_endurance * 5;//ぼうぎょ・5分の1に軽減
+			break;
+		default:break;
+		}
+	}
+	else {//3ターン目・6ターン目...
+		switch (rand() % 2) {
+		case 0:character[id].endurance = character[id].base_endurance;//ぼうぎょ元に戻す
+			spell_ionazun(id, character, target);
+			break;
+		case 1:character[id].endurance = character[id].base_endurance;//ぼうぎょ元に戻す
+			spell_itetukuhado(id, character, target);//いてつくはどう
+			break;
+		default:break;
+		}
+	}
+	turn_count_snowqueen++;
+}//イーブル
+
+void evilswplits_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 145;
+	character[id].agility = 108;
+	character[id].base_endurance = 67;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 155;
+	character[id].HP = character[id].maxHP;
+}
+void evilswplits_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 3) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_sweetbress(id, character, target);
+		break;
+	case 2:tool_tatakainodoramu(id, character, target);
+		break;
+	default:break;
+	}
+}//エビルスプリッツ
+
+void springer_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 190;
+	character[id].agility = 91;
+	character[id].base_endurance = 145;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 175;
+	character[id].HP = character[id].maxHP;
+}
+void springer_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 4) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1://斬りつけ・通常と同じダメージ
+		damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage);
+		break;
+	case 2:spell_rukanan(id, character, target);
+		break;
+	case 3:spell_sukara(id, character, target);
+		break;
+	default:break;
+	}
+}//シュプリンガー
+
+void gema2_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 305;
+	character[id].agility = 75;
+	character[id].base_endurance = 245;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 4000;
+	character[id].HP = character[id].maxHP;
+}
+void gema2_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	for (int attack_num = rand() % 2; 0 <= attack_num; attack_num--) {//1～2回攻撃
+		switch (rand() % 5) {
+		case 0:damage = enemy_dyrect_attack(id, character, target);
+			message_disp(id, target, damage); break;
+		case 1: {//はげしいほのお
+			int damageMin = 65;
+			int damageMax = 85;
+			damage = damageMin + rand() % (damageMax - damageMin);
+			printf("＋―――――――――――――――――＋\n");
+			printf("｜%sははげしいほのおをはなった　｜\n", playerName[id]);
+			printf("＋―――――――――――――――――＋\n");
+			for (int i = 0; i < fielddata.playernum; i++) {
+				character[i].HP -= damage;
+				if (character[i].HP < 0)
+					character[i].HP = 0;
+				printf("＋―――――――――――――――――＋\n");
+				printf("｜%sは%sに　　　　　｜\n", playerName[id], playerName[i]);
+				printf("｜%dのダメージを与えた　　　　　　｜\n", damage);
+				printf("＋―――――――――――――――――＋\n");
+			}
+			break;
+		}
+		case 2:spell_shinybress(id, character, target);
+			break;
+		case 3:spell_yaketukuiki(id, character, target);
+			break;
+		case 4:spell_merazooma(id, character, target);
+			break;
+		default:break;
+		}
+	}
+}//ゲマ(2回目)
+
+void skaldon_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 190;
+	character[id].agility = 65;
+	character[id].base_endurance = 93;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 300;
+	character[id].HP = character[id].maxHP;
+}
+void skaldon_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 3) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_mahyado(id, character, target);
+		break;
+	case 2:spell_kogoeruhubuki(id, character, target);
+		break;
+	default:break;
+	}
+}//スカルドン
+
+void flaredoragon_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 125;
+	character[id].agility = 87;
+	character[id].base_endurance = 115;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 125;
+	character[id].HP = character[id].maxHP;
+}
+void flaredoragon_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 3) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_hardfire(id, character, target);//はげしいほのお
+		break;
+	case 2:spell_yaketukuiki(id, character, target);
+		break;
+	default:break;
+	}
+}//フレアドラゴン
+
+void wightking_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 150;
+	character[id].agility = 87;
+	character[id].base_endurance = 142;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 250;
+	character[id].HP = character[id].maxHP;
+}
+void wightking_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	switch (rand() % 3) {
+	case 0:damage = enemy_dyrect_attack(id, character, target);
+		message_disp(id, target, damage); break;
+	case 1:spell_bagikurosu (id, character, target);//バギクロス
+		break;
+	case 2:spell_mahotoon(id, character, target);//マホトーン・できてない
+		break;
+	default:break;
+	}
+}//ワイトキング
+
+void mildrous_init(int id, Character* character) {
+	character[id].can_action = TRUE;
+	character[id].base_strength = 240;
+	character[id].agility = 80;
+	character[id].base_endurance = 230;
+	character[id].strength = character[id].base_strength;
+	character[id].endurance = character[id].base_endurance;
+	character[id].maxHP = 9500;
+	character[id].HP = character[id].maxHP;
+}
+void mildrous_attack(int id, Character* character) {
+	int target = get_random_player_id(character);
+	int damage = 0;
+	static int trun_count_mildrous = 1;
+	//ミルドラース第一形態
+	if (7000 < character[id].HP) {
+		switch (rand() % 5) {
+		case 0:damage = enemy_dyrect_attack(id, character, target);
+			message_disp(id, target, damage); break;
+		case 1:spell_shinybress(id, character, target);
+			break;
+		case 2:
+			spell_itetukuhado(id, character, target);//いてつくはどう
+			break;
+		case 3:spell_merazooma(id, character, target);
+			break;
+		case 4://もし手下が2匹いなかったらあくましんかんを2匹呼ぶ・できてない
+			break;
+		case 5://もし手下が2匹いなかったらきらーましんを2匹呼ぶ・できてない
+			break;
+		default:break;
+		}
+		if (character[id].HP < 7000){
+			character[id].HP = 7000;
+			trun_count_mildrous = 0;
+		}
+	}
+	else if (4500 < character[id].HP) {//ミルドラース最終形態・7000～4500
+		for (int attack_num = rand() % 2; 0 <= attack_num; attack_num--) {//1～2回行動
+			if (trun_count_mildrous % 3 == 1) {//1ターン・4ターン
+				switch (rand() % 2) {
+				case 0:damage = enemy_dyrect_attack(id, character, target);
+					message_disp(id, target, damage); break;
+				case 1:spell_syakunetuhono(id, character, target);//しゃくねつ
+					break;
+				default:break;
+				}
+			}
+			else if (trun_count_mildrous % 3 == 2) {//2ターン・5ターン
+				switch (rand() % 2) {
+				case 0:spell_itetukuhado(id, character, target);//いてつくはどう
+					break;
+				case 1:spell_ionazun(id, character,target);//イオナズン
+					break;
+				default:break;
+				}
+			}
+			else {//3ターン・6ターン
+				switch (rand() % 2) {
+				case 0:spell_rukanan(id, character, target);//ルカナン
+					break;
+				case 1:spell_mahokanta(id, character, target);//マホカンタ
+					break;
+				default: break;
+				}
+			}
+		}
+	}
+	else if (2500 < character[id].HP) {//ミルドラース最終形態・4500～2500
+		for (int attack_num = rand() % 2; 0 <= attack_num; attack_num--) {//1～2回行動
+			if (trun_count_mildrous % 3 == 1) {//1ターン・4ターン
+				switch (rand() % 2) {
+				case 0:damage = enemy_dyrect_attack(id, character, target);
+					message_disp(id, target, damage); break;
+				case 1:spell_syakunetuhono(id, character, target);//しゃくねつ
+					break;
+				default:break;
+				}
+			}
+			else if (trun_count_mildrous % 3 == 2) {//2ターン・5ターン
+				switch (rand() % 2) {
+				case 0:spell_itetukuhado(id, character, target);//いてつくはどう
+					break;
+				case 1:character[id].HP += 500;//めいそう(HP500回復)
+					break;
+				default:break;
+				}
+			}
+			else {//3ターン・6ターン
+				switch (rand() % 2) {
+				case 0:spell_rukanan(id, character, target);//ルカナン
+					break;
+				case 1:spell_merazooma(id, character, target);//メラゾーマ
+					break;
+				default: break;
+				}
+			}
+		}
+	}
+	else {//ミルドラース最終形態・2500～0
+		for (int attack_num = rand() % 2; 0 <= attack_num; attack_num--) {//1～2回行動
+			if (trun_count_mildrous % 3 == 1) {//1ターン・4ターン
+				switch (rand() % 2) {
+				case 0://痛恨な一撃
+					printf("＋―――――――――――――――――＋\n");
+					printf("｜%sは%sにつうこんないちげき　｜\n", playerName[id], playerName[target]);
+					printf("＋―――――――――――――――――＋\n");
+					character[target].HP -= 215; break;
+				case 1:spell_syakunetuhono(id, character, target);//しゃくねつ
+					break;
+				default:break;
+				}
+			}
+			else if (trun_count_mildrous % 3 == 2) {//2ターン・5ターン
+				switch (rand() % 2) {
+				case 0:spell_itetukuhado(id, character, target);//いてつくはどう
+					break;
+				case 1:spell_ionazun(id, character, target);//イオナズン
+					break;
+				default:break;
+				}
+			}
+			else {//3ターン・6ターン
+				switch (rand() % 2) {
+				case 0:spell_rukanan(id, character, target);//ルカナン
+					break;
+				case 1:spell_merazooma(id, character, target);//メラゾーマ
+					break;
+				default: break;
+				}
+			}
+		}
+	}
+
+	trun_count_mildrous++;
+	
+}//ミルドラース
+
 
 //Enemy  = {_init,_attack};
 Enemy suraimu = { suraimu_init,suraimu_attack ,L"スライム"};//スライム
@@ -1260,9 +2608,40 @@ Enemy witch= { witch_init,witch_attack, L"まほうつかい" };//まほうつかい
 Enemy zairu = { zairu_init,zairu_attack , L"ザイル" };//ザイル
 Enemy snowqueen= { snowqueen_init,snowqueen_attack , L"ゆきのじょうおう" };//ゆきのじょうおう
 
-Enemy estark = { estark_init,estark_action};
+Enemy obakekinoko= { obakekinoko_init,obakekinoko_attack ,L"おばけキノコ" };//おばけキノコ
+Enemy evilapple= { evilapple_init,evilapple_attack ,L"エビルアップル" };//エビルアップル
+Enemy waraibag= { waraibag_init,waraibag_attack ,L"わらいぶくろ" };//わらいぶくろ
+Enemy hoimislime= { hoimislime_init,hoimislime_attack ,L"ホイミスライム" };//ホイミスライム
+Enemy skelsoldier= { skelsoldier_init,skelsoldier_attack ,L"がいこつへい" };//がいこつへい
+Enemy falsetaiko= { falsetaiko_init,falsetaiko_attack ,L"ニセたいこう" };//ニセたいこう
+Enemy behomaslime= { behomaslime_init,behomaslime_attack ,L"ベホマスラロードイム" };//ベホマスライム
+Enemy madolooper= { madolooper_init,madolooper_attack ,L"マドルーパー*2" };//マドルーパー*2
+Enemy snakebat= { snakebat_init,snakebat_attack ,L"へびこうもり" };//へびこうもり
+Enemy kandata= { kandata_init,kandata_attack ,L"カンダタ" };//カンダタ
+Enemy shieldhipo = { shieldhipo_init,shieldhipo_attack ,L"シールドヒッポ" };//シールドヒッポ
+Enemy oak = { oak_init,oak_attack ,L"オークLv20" };//オークLv20
+Enemy kimeera= { kimeera_init,kimeera_attack ,L"キメーラLv35" };//キメーラLv35
+Enemy jami= { jami_init,jami_attack ,L"ジャミ" };//ジャミ
+Enemy berogonload= { berogonload_init,berogonload_attack ,L"ベロゴンロード" };//ベロゴンロード
+Enemy magekimera= { magekimera_init,magekimera_attack ,L"メイジキメラ" };//メイジキメラ
+Enemy minidaemon= { minidaemon_init,minidaemon_attack ,L"ミニデーモン" };//ミニデーモン
+Enemy messaara= { messaara_init,messaara_attack ,L"メッサーラ" };//メッサーラ
+Enemy gons= { gons_init,gons_attack ,L"ゴンズ" };//ゴンズ
+Enemy gema= { gema_init,gema_attack ,L"ゲマ" };//ゲマ
+Enemy buoon= { buoon_init,buoon_attack ,L"ブオーン" };//ブオーン
+Enemy izrairu= { izrairu_init,izrairu_attack ,L"イズライール" };//イズライール
+Enemy ramada= { ramada_init,ramada_attack ,L"ラマダ" };//ラマダ
+Enemy iburu= { iburu_init,iburu_attack ,L"イーブル" };//イーブル
+Enemy evilswplits= { evilswplits_init,evilswplits_attack ,L"エビルスプリッツ" };//エビルスプリッツ
+Enemy springer= { springer_init,springer_attack ,L"シュプリンガー" };//シュプリンガー
+Enemy gema2= { gema2_init,gema2_attack ,L"ゲマ(2回目)" };//ゲマ(2回目)
+Enemy skaldon= { skaldon_init,skaldon_attack ,L"スカルドラゴン" };//スカルドン
+Enemy flaredoragon= { flaredoragon_init,flaredoragon_attack ,L"フレアドラゴン" };//フレアドラゴン
+Enemy wightking= { wightking_init,wightking_attack ,L"ワイトキング" };//ワイトキング
+Enemy mildrous= { mildrous_init,mildrous_attack ,L"ミルドラース" };//ミルドラース
+
+Enemy estark = { estark_init,estark_action};//エスターク
 Enemy *enemies[5];
-//力，素早さ，身の守り，maxHP，maxMP
 
 
 void spell_copy(Spell *dst[20],Spell *src[20]) {
@@ -1279,52 +2658,16 @@ void hero_init(int id, Character* character, int level) {
 	spell_copy(character[id].spells ,presetspell1);
 }
 void bianka_init(int id, Character* character, int level) {
-
-	character[id].base_strength = 55;
-	character[id].agility = 120;
-	character[id].base_endurance = 68;
-	character[id].maxHP = 291;
-	character[id].maxMP = 290;
-
-	character[id].strength = character[id].base_strength;
-	character[id].endurance = character[id].base_endurance;
-	character[id].attack = character[id].strength + 100;
-	character[id].defense = character[id].endurance + 157;
-	character[id].HP = character[id].maxHP;
-	character[id].MP = character[id].maxMP;
+	set_Character_base_status(id, character, "ビアンカ", level);
 	spell_copy(character[id].spells , presetspell2);
-
 }
 void rex_init(int id, Character* character, int level) {
-
-	character[id].base_strength = 123;
-	character[id].agility = 95;
-	character[id].base_endurance = 50;
-	character[id].maxHP = 324;
-	character[id].maxMP = 180;
-
-	character[id].strength = character[id].base_strength;
-	character[id].endurance = character[id].base_endurance;
-	character[id].attack = character[id].strength + 130;
-	character[id].defense = character[id].endurance + 235;
-	character[id].HP = character[id].maxHP;
-	character[id].MP = character[id].maxMP;
-	spell_copy(character[id].spells, presetspell3);
+	set_Character_base_status(id, character, "レックス", level);
+	spell_copy(character[id].spells, presetspell2);
 }
-
 void tabasa_init(int id, Character* character, int level) {
-	character[id].base_strength = 50;
-	character[id].agility = 115;
-	character[id].base_endurance = 75;
-	character[id].maxHP = 271;
-	character[id].maxMP = 190;
-	character[id].strength = character[id].base_strength;
-	character[id].endurance = character[id].base_endurance;
-	character[id].attack = character[id].strength + 100;
-	character[id].defense = character[id].endurance + 180;
-	character[id].HP = character[id].maxHP;
-	character[id].MP = character[id].maxMP;
-	spell_copy(character[id].spells, presetspell4);
+	set_Character_base_status(id, character, "タバサ", level);
+	spell_copy(character[id].spells, presetspell2);
 }
 
 PresetCharacter hero = {L"主人公",0,hero_init};
@@ -1342,12 +2685,15 @@ void field_init() {
 void add_character(PresetCharacter addCharacter, Character* character) {
 	addCharacter.init(fielddata.fullcharacters, character, 45);
 	strcpy(character[fielddata.fullcharacters].name, addCharacter.name);
+	wcstombs_s(NULL, playerName[fielddata.fullcharacters], 20, addCharacter.name, _TRUNCATE);
 	fielddata.fullcharacters++;
 	fielddata.playernum++;
 }
 void add_Enemy(Enemy addCharacter, Character* character) {
-	printf("enemynum=%d",fielddata.enemynum);
 	strcpy(character[fielddata.fullcharacters].name, addCharacter.name);
+
+	wcstombs_s(NULL, playerName[fielddata.fullcharacters], 20, addCharacter.name, _TRUNCATE);
+
 	enemies[fielddata.enemynum] = &addCharacter;
 	enemies[fielddata.enemynum]->init(fielddata.fullcharacters, character);
 	fielddata.fullcharacters++;
@@ -1358,60 +2704,275 @@ void add_Enemy(Enemy addCharacter, Character* character) {
 
 
 //キャラクター設定
+
 void init(Character* character)
 {
+	setlocale(LC_ALL, "Japanese");
 	field_init();
 	//addCharacterすべてしてからaddEnemy
 	add_character(hero, character);
-	add_character(bianka, character);
-	add_Enemy(kubinagaweasel, character);
-	add_Enemy(prisoncat, character);
-	add_Enemy(prisoncat, character);
-}
+	add_Enemy(suraimu, character);
+}//スライム
 
+ /*
 void party0_init(Character* character) {
 	field_init();
 	//addCharacterすべてしてからaddEnemy
-	add_character(hero, character);
-	add_character(bianka, character);
-	add_Enemy(suraimu, character);
-	add_Enemy(suraimu, character);
-	add_Enemy(suraimu, character);
-}
-
+	add_character("主人公", character);
+	add_character("ビアンカ", character);
+	add_Enemy("スライム", character);
+	add_Enemy("スライム", character);
+	add_Enemy("スライム", character);
+}//スライム*3
 void party1_init(Character* character) {
 	field_init();
 	//addCharacterすべてしてからaddEnemy
-	add_character(hero, character);
-	add_character(bianka, character);
-	add_Enemy(oyabunghost, character);
-}
+	add_character("主人公", character);
+	add_character("ビアンカ", character);
+	add_Enemy("おやぶんゴースト", character);
+}//おやぶんゴースト
 void party2_init(Character* character) {
 	field_init();
 	//addCharacterすべてしてからaddEnemy
-	add_character(hero, character);
-	add_character(bianka, character);
-	add_Enemy(meralizard, character);
-	add_Enemy(soilchild, character);
-	add_Enemy(nightsplit, character);
-}
+	add_character("主人公", character);
+	add_character("ビアンカ", character);
+	add_Enemy("メラリザード", character);
+	add_Enemy("つちわらし", character);
+	add_Enemy("ナイトウィップス", character);
+}//メラリザード・つちわらし・ナイトウィップス
 void party3_init(Character* character) {
 	field_init();
 	//addCharacterすべてしてからaddEnemy
-	add_character(hero, character);
-	add_character(bianka, character);
-	add_Enemy(zairu, character);
-}
+	add_character("主人公", character);
+	add_character("ビアンカ", character);
+	add_Enemy("ザイル", character);
+}//ザイル
 void party4_init(Character* character) {
 	field_init();
 	//addCharacterすべてしてからaddEnemy
-	add_character(hero, character);
-	add_character(bianka, character);
-	add_Enemy(snowqueen, character);
-}
+	add_character("主人公", character);
+	add_character("ビアンカ", character);
+	add_Enemy("ゆきのじょうおう", character);
+}//ゆきのじょうおう
+void party5_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("主人公", character);
+	add_character("ヘンリー", character);
+	add_Enemy("おばけキノコ", character);
+	add_Enemy("エビルアップル", character);
+}//おばけキノコ*3・エビルアップル<主人公・ヘンリー>
+void party6_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("主人公", character);
+	add_character("エビルアップル", character);
+	add_character("ヘンリー", character);
+	add_character("スライムナイト", character);
+	add_Enemy("スライム", character);
+	add_Enemy("スライム", character);
+	add_Enemy("スライム", character);
+	add_Enemy("スライム", character);
+	add_Enemy("スライム", character);
+	add_Enemy("スライム", character);
+	add_Enemy("スライム", character);
+	add_Enemy("スライム", character);
+}//スライム*8<エビルアップル・主人公・ヘンリー・スライムナイト2,10,7,1>
+void party7_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("主人公", character);
+	add_character("エビルアップル", character);
+	add_character("ヘンリー", character);
+	add_character("スライムナイト", character);
+	add_Enemy("わらいぶくろ", character);
+	add_Enemy("わらいぶくろ", character);
+	add_Enemy("ホイミスライム", character);
+	add_Enemy("ホイミスライム", character);
+	add_Enemy("ホイミスライム", character);
+	add_Enemy("がいこつへい", character);
+}//わらいぶくろ*2・ホイミスライム*3・がいこつへい<エビルアップル・主人公・ヘンリー・スライムナイト12,13,13,12>
+void party8_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("主人公", character);
+	add_character("エビルアップル", character);
+	add_character("ヘンリー", character);
+	add_character("スライムナイト", character);
+	add_Enemy("ニセたいこう", character);
+}//ニセたいこう<エビルアップル・主人公・ヘンリー・スライムナイト12,13,13,12>
+void party9_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("主人公", character);
+	add_character("エビルアップル", character);
+	add_character("スライムナイト", character);
+	add_Enemy("ベホマスライム", character);
+	add_Enemy("ベホマスライム", character);
+	add_Enemy("マドルーパー", character);
+	add_Enemy("マドルーパー", character);
+	add_Enemy("へびこうもり", character);
+}//ベホマスライム*2・マドルーパー*2・へびこうもり<主人公・エビルアップル・スライムナイト,14,13,13>
+void party10_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("主人公", character);
+	add_character("エビルアップル", character);
+	add_character("スライムナイト", character);
+	add_character("キラーパンサー", character);
+	add_Enemy("カンダタ", character);
+	add_Enemy("シールドヒッポ", character);
+}//カンダタ・シールドヒッポ<主人公・エビルアップル・スライムナイト,キラーパンサー,14,13,13,15>
+void party11_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("主人公", character);
+	add_character("エビルアップル", character);
+	add_character("スライムナイト", character);
+	add_character("キラーパンサー", character);
+	add_Enemy("オークLv20", character);
+}//オークLv20<主人公・エビルアップル・スライムナイト,キラーパンサー,14,14,14,15>
+void party12_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("主人公", character);
+	add_character("エビルアップル", character);
+	add_character("スライムナイト", character);
+	add_character("キラーパンサー", character);
+	add_Enemy("キメーラLv35", character);
+}//キメーラLv35<主人公・エビルアップル・スライムナイト,キラーパンサー,14,14,14,15>
+void party13_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("主人公", character);
+	add_character("エビルアップル", character);
+	add_character("スライムナイト", character);
+	add_character("キラーパンサー", character);
+	add_Enemy("ジャミ", character);
+}//ジャミ<主人公・エビルアップル・スライムナイト,キラーパンサー,14,14,14,15>
+void party14_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("サンチョ", character);
+	add_character("エビルアップル", character);
+	add_character("男の子", character);
+	add_character("女の子", character);
+	add_Enemy("ベロゴンロード", character);
+	add_Enemy("メイジキメラ", character);
+	add_Enemy("ミニデーモン", character);
+	add_Enemy("メッサーラ", character);
+}//ベロゴンロード・メイジキメラ・ミニデーモン・メッサーラ<サンチョ・エビルアップル・男の子・女の子,20,15,5,5>
+void party15_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("サンチョ", character);
+	add_character("主人公", character);
+	add_character("男の子", character);
+	add_character("女の子", character);
+	add_Enemy("ゴンズ", character);
+}//ゴンズ<サンチョ・男の子・女の子・主人公, 26, 23, 22, 22>
+void party16_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("サンチョ", character);
+	add_character("主人公", character);
+	add_character("男の子", character);
+	add_character("女の子", character);
+	add_Enemy("ゲマ", character);
+}//ゲマ<サンチョ・男の子・女の子・主人公, 26, 23, 22, 22>
+void party17_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("サンチョ", character);
+	add_character("主人公", character);
+	add_character("男の子", character);
+	add_character("女の子", character);
+	add_Enemy("", character);
+	add_Enemy("", character);
+}//ブオーン<サンチョ・男の子・女の子・主人公, 26, 23, 22, 22>
+void party18_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("サンチョ", character);
+	add_character("主人公", character);
+	add_character("男の子", character);
+	add_character("女の子", character);
+	add_Enemy("イズライール", character);
+	add_Enemy("イズライール", character);
+	add_Enemy("イズライール", character);
+}//イズライール*3<サンチョ・男の子・女の子・主人公,27,25,24,24>
+void party19_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("サンチョ", character);
+	add_character("主人公", character);
+	add_character("男の子", character);
+	add_character("女の子", character);
+	add_Enemy("ラマダ", character);
+}//ラマダ<サンチョ・男の子・女の子・主人公,27,25,24,24>
+void party20_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("サンチョ", character);
+	add_character("主人公", character);
+	add_character("男の子", character);
+	add_character("女の子", character);
+	add_Enemy("イーブル", character);
+}//イーブル<サンチョ・男の子・女の子・主人公,28,25,25,24>
+void party21_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("サンチョ", character);
+	add_character("主人公", character);
+	add_character("男の子", character);
+	add_character("女の子", character);
+	add_Enemy("エビルスプリッツ", character);
+	add_Enemy("エビルスプリッツ", character);
+	add_Enemy("シュプリンガー", character);
+	add_Enemy("シュプリンガー", character);
+}//エビルスプリッツ*2・シュプリンガー*2<サンチョ・男の子・女の子・主人公,29,27,26,26>
+void party22_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("サンチョ", character);
+	add_character("主人公", character);
+	add_character("男の子", character);
+	add_character("女の子", character);
+	add_Enemy("ゲマ(2回目)", character);
+}//ゲマ(2回目)<サンチョ・男の子・女の子・主人公,29,27,26,26>
+void party23_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("サンチョ", character);
+	add_character("主人公", character);
+	add_character("男の子", character);
+	add_character("女の子", character);
+	add_Enemy("スカルドン", character);
+	add_Enemy("フレアドラゴン", character);
+	add_Enemy("フレアドラゴン", character);
+	add_Enemy("フレアドラゴン", character);
+	add_Enemy("ワイトキング", character);
+}//スカルドラゴン・フレアドラゴン * 3・ワイトキング<サンチョ・男の子・女の子・主人公,29,27,27,26>
+void party24_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("サンチョ", character);
+	add_character("主人公", character);
+	add_character("男の子", character);
+	add_character("女の子", character);
+	add_Enemy("ミルドラース", character);
+}//ミルドラース<サンチョ・男の子・女の子・主人公,29,27,27,26>
 
-
-
+voidparty25_init(Character* character) {
+	field_init();
+	//addCharacterすべてしてからaddEnemy
+	add_character("主人公", character);
+	add_character("ビアンカ", character);
+	add_character("男の子", character);
+	add_character("女の子", character);	
+	add_Enemy("エスターク", character);
+}//エスターク<主人公・ビアンカ・男の子・女の子,45,45,45,45>
+*/
 
 void status_poison(Character *character)
 {

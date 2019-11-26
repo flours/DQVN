@@ -1,6 +1,7 @@
 import ctypes
 import random
 
+
 class Spell(ctypes.Structure):
     _fields_=[
         ("name",ctypes.c_wchar*(8*2+1)),
@@ -46,36 +47,46 @@ class Character(ctypes.Structure):
 class DQVenv:
 
     def __init__(self):
+        
+        self.playernum= 1
+        self.enemynum = 1
+        self.allnum = self.playernum + self.enemynum
+        
         self.libc=ctypes.CDLL("Project5.dll")
         self.libc.init.restype=None
-        self.libc.init.argtypes=(Character*5,)
+        self.libc.init.argtypes=(Character*self.allnum,)
 
         self.libc.status_check.restype=None
-        self.libc.status_check.argtypes=(Character*5,)
+
+        self.libc.status_check.argtypes=(Character*self.allnum,)
         
-        self.playernum=4
-        self.enemynum=1
 
         self.libc.battle_main.restype=None
-        self.libc.battle_main.argtypes=(Character*5,ctypes.c_bool,ctypes.c_bool)
-        self.character_data=(Character*5)()
+        self.libc.battle_main.argtypes=(Character*self.allnum,ctypes.c_bool,ctypes.c_bool)
+        self.character_data=(Character*self.allnum)()
+        print(Character,self.allnum)
+        
 
     def reset(self):
         self.libc.init(self.character_data)
         return self.character_data
     def step(self,action,target):
-        #print(action,target,self.character_data[0].HP,self.character_data[1].HP,self.character_data[2].HP,self.character_data[3].HP,self.character_data[4].HP)
-        for i in range(4):
+        for i in range(len(action)):
             self.setAction(action[i],i,target[i])
         self.libc.status_check(self.character_data)
         self.libc.battle_main(self.character_data,False,False)
 
         end_flag=False
-        if (self.character_data[0].HP is self.character_data[1].HP is self.character_data[2].HP is self.character_data[3].HP is 0) or self.character_data[4].HP is 0:
-            end_flag=True
+        for i in range(self.playernum):
+            if (self.character_data[i].HP is 0):
+                if(i != self.playernum-1):
+                    continue
+                else:
+                    end_flag=True
 
         reward=0
-        reward=self.character_data[4].maxHP-self.character_data[4].HP
+        for i in range(self.enemynum):
+            reward+=self.character_data[self.allnum-self.playernum+i].maxHP-self.character_data[self.allnum-self.playernum+i].HP
 
         return self.character_data, reward, end_flag, None
 
@@ -91,7 +102,7 @@ class DQVenv:
             self.character_data[id].action_spell=action-2
 
     def setRandomAction(self):
-        for i in range(4):
+        for i in range(self.playernum):
             self.character_data[i].action = random.randint(0, 2);
             self.character_data[i].action_spell = random.randint(0, self.character_data[i].spells.size-1);
             self.character_data[i].action_spell_target = random.randint(0,3);

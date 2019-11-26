@@ -7,9 +7,7 @@ env=DQVenv()
 data=env.reset()
 
 
-
-
-playernum=4
+playernum=1
 enemynum=1
 print("入力はカーソルキーとエンターでします")
 
@@ -110,6 +108,8 @@ while True:
         actions.append(action)
         targets.append(target)
     data,reward,end_flag,_=env.step(actions,targets)
-    print("HP:",data[0].HP,data[1].HP,data[2].HP,data[3].HP,data[4].HP,"reward:",reward)
+    print("HP:",)
+    for i in range(playernum+enemynum):
+        print(data[i].HP,)
     if end_flag:
         break
