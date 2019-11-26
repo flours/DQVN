@@ -78,7 +78,7 @@ class Agent:
         return self.t_network.predict_on_batch(x_batch),self.t_network2.predict_on_batch(x_batch),self.t_network3.predict_on_batch(x_batch),self.t_network4.predict_on_batch(x_batch)
 
     def WeightCopy(self):
-        for i in range(self.env.playernum+self.env.enemynum):
+        for i in range(self.env.playernum):
             self.t_network.layers[i].set_weights(self.q_network.layers[i].get_weights())
         #self.t_network.set_weights(self.q_network.get_weights())
 
@@ -165,7 +165,7 @@ def main():
         if min_epsilon<=epsilon:
             epsilon = min_epsilon
 
-        state = env.reset()
+        state = env.reset(0)
         state = Preprocess(state,env.playernum,env.enemynum)
 
         epsilon = min_epsilon + (1. - min_epsilon) * (n_episode - episode) / n_episode

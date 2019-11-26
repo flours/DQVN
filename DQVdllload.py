@@ -77,16 +77,13 @@ class DQVenv:
         
 
     def reset(self,id):
-        print('init')
         self.libc.init(self.character_data,id)
-        print('init end')
         i = ctypes.c_uint32()
         i2 = ctypes.c_uint32()
         self.libc.get_fielddata(i,i2)
         self.playernum=i.value
         self.enemynum=i2.value
         self.allnum=self.playernum+self.enemynum
-        print(self.allnum)
         return self.character_data
             
     def step(self,action,target):
@@ -116,7 +113,7 @@ class DQVenv:
 
         reward=0
         for i in range(self.enemynum):
-            reward+=self.character_data[self.allnum-self.playernum+i].maxHP-self.character_data[self.allnum-self.playernum+i].HP
+            reward+=self.character_data[self.playernum+i].maxHP-self.character_data[self.playernum+i].HP
 
         return self.character_data, reward, end_flag, None
 

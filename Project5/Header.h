@@ -28,7 +28,7 @@ typedef struct
 
 	BOOL poison;
 	BOOL paralysis;
-	BOOL sleep;
+	int sleep;
 	BOOL can_action;
 	BOOL dragon;
 
@@ -67,7 +67,6 @@ typedef struct {
 	void(*attack)(int id, Character* character);
 	wchar_t name[10 * 2 + 1];
 }Enemy;
-
 
 CAP_API void init(Character* character, int partyid);
 CAP_API void status_check(Character* character);
