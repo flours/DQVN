@@ -69,6 +69,7 @@ typedef struct {
 }Enemy;
 
 
-CAP_API void init(Character* character);
+CAP_API void init(Character* character, int partyid);
 CAP_API void status_check(Character* character);
 CAP_API void battle_main(Character* character, BOOL wait, BOOL disp);
+CAP_API void get_fielddata(int *playernum,int *enemynum);

@@ -1,0 +1,104 @@
+commit 3a22163dc60a22ff41a254a8bd8138e76e7ff319
+Author: tada nobuhiro <recf6978@yahoo.co.jp>
+Date:   Mon Nov 25 18:33:42 2019 +0900
+
+    なにしたか忘れた
+
+commit 2dae61bfb17aab93268ecefc13f569b5a61d6d3a
+Author: hurukonn <s16a1027@bene.fit.ac.jp>
+Date:   Tue Nov 26 12:22:32 2019 +0900
+
+    敵キャラの追加(青年期クリアーまで)
+
+commit 9ce10afa89e34e810f40b60b4a517329273741ee
+Author: hurukonn <s16a1027@bene.fit.ac.jp>
+Date:   Tue Nov 26 09:23:34 2019 +0900
+
+    敵のパーティを増やしました。呪文などできていないところがあるのですが、いったん休みます。
+
+commit dde87a9d27f2efd2631d20dc60fef928cc6daf41
+Merge: 6a44429 b3245e5
+Author: hurukonn <s16a1027@bene.fit.ac.jp>
+Date:   Sun Nov 24 17:13:22 2019 +0900
+
+    change DQN.py
+
+commit 6a444295e1aefd46a50e63eadf9952e4539abcb8
+Author: hurukonn <s16a1027@bene.fit.ac.jp>
+Date:   Sun Nov 24 17:10:55 2019 +0900
+
+    asasaaargeargwfvgwfraerwgfae
+
+commit b3245e5e1bb8b55bea06fff9c80ce5c6279614a7
+Author: tada nobuhiro <recf6978@yahoo.co.jp>
+Date:   Sun Nov 24 03:31:59 2019 +0900
+
+    味方の情報(人間、モンスター)および武器情報を保存しました、dllからキャラ名、レベル、装備を指定してステータスを設定できるようになりました
+
+commit ae956e8761df24731c4ebf4be0e17efea122237e
+Author: tada nobuhiro <recf6978@yahoo.co.jp>
+Date:   Sun Nov 24 00:17:22 2019 +0900
+
+    env_debug.pyを修正しました Source.cのEnemy,Presetcharacter,Character構造体にメンバ変数nameを追加しました。
+
+commit 29739fbccdc155dbaaeed329b77600d68989816a
+Merge: 513490e 3d6b02f
+Author: tada nobuhiro <recf6978@yahoo.co.jp>
+Date:   Sat Nov 23 23:10:55 2019 +0900
+
+    mergeしました
+
+commit 3d6b02f59201851219a9593b37651c1e9c544943
+Author: hurukonn <s16a1027@bene.fit.ac.jp>
+Date:   Sat Nov 23 19:42:34 2019 +0900
+
+    敵キャラ(幼少期)の追加
+
+commit 513490ee38999f283eafb748c5d05699c1a6b920
+Author: tada nobuhiro <recf6978@yahoo.co.jp>
+Date:   Sat Nov 23 15:31:42 2019 +0900
+
+    DQN.pyを修正(出力を12*8まで増やしました攻撃、道具スペル10*対象最大8) 現在はスライムの行動にエスタークのステータスになってます
+
+commit 33f7abd407443b5a0b072dbb07a7ecbd861ec123
+Author: tada nobuhiro <recf6978@yahoo.co.jp>
+Date:   Sat Nov 23 02:32:52 2019 +0900
+
+    Spellが使えないバグの修正
+
+commit f0ddd2f43abf2ad6b64b30cdfab0d43bd0e43e6d
+Merge: 41b14cd 4837f4c
+Author: tada nobuhiro <recf6978@yahoo.co.jp>
+Date:   Fri Nov 22 18:28:14 2019 +0900
+
+    delete __pychace__
+
+commit 41b14cd4876c704f9b05fdfe15280c57c09fff42
+Author: tada nobuhiro <recf6978@yahoo.co.jp>
+Date:   Fri Nov 22 18:04:07 2019 +0900
+
+    スライムを追加といろいろ
+
+commit 4837f4cdc795af02d67f1e65f2f71ad57560d320
+Author: hurukonn <s16a1027@bene.fit.ac.jp>
+Date:   Fri Nov 22 18:01:21 2019 +0900
+
+    リワードと入力を変えました
+
+commit a8b5c5e4e66f135da231b03f2f6961b99e430517
+Author: hurukonn <s16a1027@bene.fit.ac.jp>
+Date:   Fri Nov 22 03:41:13 2019 +0900
+
+    入力にステータスの追加,rewardを敵のHPに変更
+
+commit 785bc7577897e2445cd0f898ad1f7319c57d08ef
+Author: tada nobuhiro <recf6978@yahoo.co.jp>
+Date:   Mon Oct 28 13:42:08 2019 +0900
+
+    4players
+
+commit c93c9e3da2f0a5c756ce2ef7cabf3f2d84538b20
+Author: tada nobuhiro <recf6978@yahoo.co.jp>
+Date:   Sat Oct 26 22:28:55 2019 +0900
+
+    initial commit

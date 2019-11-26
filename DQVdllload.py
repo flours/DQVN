@@ -41,6 +41,13 @@ class Character(ctypes.Structure):
     ]
 
 
+class FieldData(ctypes.Structure):
+    _fields=[
+        ("playernum",ctypes.c_int32),
+        ("enemynum",ctypes.c_int32),
+        ("fullcharacters",ctypes.c_int32)
+    ]
+
 
 
 
@@ -48,28 +55,40 @@ class DQVenv:
 
     def __init__(self):
         
-        self.playernum= 1
-        self.enemynum = 1
-        self.allnum = self.playernum + self.enemynum
+        self.playernum= 0
+        self.enemynum = 0
+        self.allnum=0
+        self.maxcharacternum = 12
         
         self.libc=ctypes.CDLL("Project5.dll")
         self.libc.init.restype=None
-        self.libc.init.argtypes=(Character*self.allnum,)
+        self.libc.init.argtypes=(Character*self.maxcharacternum,)
 
         self.libc.status_check.restype=None
 
-        self.libc.status_check.argtypes=(Character*self.allnum,)
+        self.libc.status_check.argtypes=(Character*self.maxcharacternum,)
         
 
         self.libc.battle_main.restype=None
-        self.libc.battle_main.argtypes=(Character*self.allnum,ctypes.c_bool,ctypes.c_bool)
-        self.character_data=(Character*self.allnum)()
-        print(Character,self.allnum)
+        self.libc.battle_main.argtypes=(Character*self.maxcharacternum,ctypes.c_bool,ctypes.c_bool)
+        self.libc.get_fielddata.restype=None
+        self.libc.get_fielddata.argtypes=(ctypes.POINTER(ctypes.c_uint32),ctypes.POINTER(ctypes.c_uint32))
+        self.character_data=(Character*self.maxcharacternum)()
         
 
-    def reset(self):
-        self.libc.init(self.character_data)
+    def reset(self,id):
+        print('init')
+        self.libc.init(self.character_data,id)
+        print('init end')
+        i = ctypes.c_uint32()
+        i2 = ctypes.c_uint32()
+        self.libc.get_fielddata(i,i2)
+        self.playernum=i.value
+        self.enemynum=i2.value
+        self.allnum=self.playernum+self.enemynum
+        print(self.allnum)
         return self.character_data
+            
     def step(self,action,target):
         for i in range(len(action)):
             self.setAction(action[i],i,target[i])
@@ -83,6 +102,17 @@ class DQVenv:
                     continue
                 else:
                     end_flag=True
+            else:
+                break
+        for i in range(self.enemynum):
+            i+=self.playernum
+            if (self.character_data[i].HP is 0):
+                if(i != self.playernum+self.enemynum-1):
+                    continue
+                else:
+                    end_flag=True
+            else:
+                break
 
         reward=0
         for i in range(self.enemynum):

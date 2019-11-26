@@ -4,8 +4,9 @@ import csv
 
 #モンスターデータを取得
 def get_monster_data():
-    for i in range(1,303):
-        url="https://kyokugen.info/dq5/mon"+str(i)+".html"
+    for i in range(1,9):
+        #url="https://kyokugen.info/dq5/mon"+str(i)+".html"
+        url="https://kyokugen.info/dq5/man"+str(i)+".html"
         try:
             html = requests.get(url)
             html=html.content.decode('utf-8')
@@ -25,13 +26,13 @@ def get_monster_data():
             if "必要経験値" in str(table_text):
                 status_table_id=i
 
-        with open(char_name+"_status.csv", "w", encoding='cp932', newline='') as file:
-            writer = csv.writer(file)
-            for row in table[status_table_id].find_all("tr"):
-                csvRow = []
-                for cell in row.findAll(['td', 'th']):
-                    csvRow.append(cell.text)
-                writer.writerow(csvRow)
+#        with open(char_name+"_status.csv", "w", encoding='cp932', newline='') as file:
+#            writer = csv.writer(file)
+#            for row in table[status_table_id].find_all("tr"):
+#                csvRow = []
+#                for cell in row.findAll(['td', 'th']):
+#                    csvRow.append(cell.text)
+#                writer.writerow(csvRow)
 
         with open(char_name+"spell.csv", "w", encoding='cp932', newline='') as file:
             writer = csv.writer(file)
@@ -68,3 +69,4 @@ def get_item_data():
                 for cell in row.findAll(['td', 'th']):
                     csvRow.append(cell.text)
                 writer.writerow(csvRow)
+get_monster_data()
