@@ -55,6 +55,7 @@ class DQVenv:
 
     def __init__(self):
         
+        self.prevhp=[]
         self.playernum= 0
         self.enemynum = 0
         self.allnum=0
@@ -73,6 +74,8 @@ class DQVenv:
         self.libc.battle_main.argtypes=(Character*self.maxcharacternum,ctypes.c_bool,ctypes.c_bool)
         self.libc.get_fielddata.restype=None
         self.libc.get_fielddata.argtypes=(ctypes.POINTER(ctypes.c_uint32),ctypes.POINTER(ctypes.c_uint32))
+        self.libc.get_damages.restype=None
+        self.libc.get_damages.argtypes=(ctypes.POINTER(ctypes.c_int32),ctypes.POINTER(ctypes.c_int32),ctypes.POINTER(ctypes.c_int32),ctypes.POINTER(ctypes.c_int32))
         self.character_data=(Character*self.maxcharacternum)()
         
 
@@ -84,11 +87,14 @@ class DQVenv:
         self.playernum=i.value
         self.enemynum=i2.value
         self.allnum=self.playernum+self.enemynum
+        self.prevhp=[0]*self.allnum
+        for i in range(self.enemynum):
+            self.prevhp[self.playernum+i]=self.character_data[self.playernum+i].HP
         return self.character_data
             
-    def step(self,action,target):
+    def step(self,action):
         for i in range(len(action)):
-            self.setAction(action[i],i,target[i])
+            self.setAction(action[i]//12,i,action[i]%12)
         self.libc.status_check(self.character_data)
         self.libc.battle_main(self.character_data,False,False)
 
@@ -107,26 +113,29 @@ class DQVenv:
                 if(i != self.playernum+self.enemynum-1):
                     continue
                 else:
+                    print('win')
                     end_flag=True
             else:
                 break
 
         reward=0
-        for i in range(self.enemynum):
-            reward+=self.character_data[self.playernum+i].maxHP-self.character_data[self.playernum+i].HP
+        d0 = ctypes.c_int32(0)
+        d1 = ctypes.c_int32(0)
+        d2 = ctypes.c_int32(0)
+        d3 = ctypes.c_int32(0)
+        
+        self.libc.get_damages(d0,d1,d2,d3)
+        damages=[d0.value,d1.value,d2.value,d3.value]
 
-        return self.character_data, reward, end_flag, None
+        return self.character_data, reward, end_flag, damages
 
     def setAction(self,action,id,target):
         self.character_data[id].action_spell_target=target
         if action==0:
             self.character_data[id].action=0
-        elif action==1:
-            self.character_data[id].action=2
-            self.character_data[id].action_tool=0
         else:
             self.character_data[id].action=1
-            self.character_data[id].action_spell=action-2
+            self.character_data[id].action_spell=action-1
 
     def setRandomAction(self):
         for i in range(self.playernum):

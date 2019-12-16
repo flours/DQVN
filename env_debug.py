@@ -105,6 +105,7 @@ for i in range(env.playernum+env.enemynum):
     dispAll(data[i])
     
 while True:
+    data[0].MP=0
     actions=[]
     targets=[]
 
@@ -119,9 +120,8 @@ while True:
         name_list.reverse()
         
         target=len(name_list)-select(name_list)-1
-        actions.append(action)
-        targets.append(target)
-    data,reward,end_flag,_=env.step(actions,targets)
+        actions.append(action*12+target)
+    data,reward,end_flag,_=env.step(actions)
     print("名前:HP:MP",)
     for i in range(env.allnum):
         print(data[i].name,data[i].HP,data[i].MP,)

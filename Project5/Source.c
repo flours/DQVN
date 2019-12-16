@@ -3268,9 +3268,13 @@ void spell(int p_turn, BOOL wait, BOOL disp,Character* character)
 {
 	if (disp)display();
 
-	if(character[p_turn].spells[character[p_turn].action_spell]!=NULL)
-		character[p_turn].spells[character[p_turn].action_spell]->main(p_turn,character, character[p_turn].action_spell_target);
-
+	if (character[p_turn].spells[character[p_turn].action_spell] != NULL)
+	{
+		if (character[p_turn].spells[character[p_turn].action_spell]->mp <= character[p_turn].MP) {
+			printf("%d,%d", character[p_turn].spells[character[p_turn].action_spell]->mp, character[p_turn].MP);
+			character[p_turn].spells[character[p_turn].action_spell]->main(p_turn, character, character[p_turn].action_spell_target);
+		}
+	}
 	if (wait)_getch();
 }
 
@@ -3292,6 +3296,18 @@ int get_random_enemy_id() {
 	return rand() % fielddata.enemynum + fielddata.playernum;
 }
 
+int damages[4] = { 0,0,0,0 };
+
+int getEnemyHP(Character *character)
+{
+	int totalHP = 0;
+	int start, end;
+	enemy_loop(0, &start, &end);
+	for (int i = start; i < end; i++) {
+		totalHP += character[i].HP;
+	}
+	return totalHP;
+}
 
 void battle_main(Character* characters, BOOL wait, BOOL disp) {
 	printf("enter_battle_main");
@@ -3343,9 +3359,12 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 	int keep;
 	int b_turn = 0;			// バトルターン
 
-							// バトル
+	damages[0] = damages[1] = damages[2] = damages[3] = 0;
+		// バトル
 	for(int action_num=0;action_num<action_players;action_num++)
 	{
+		int prevHP = 0;
+		prevHP=getEnemyHP(characters);
 		int p_turn = agility_id[action_num];
 		if (characters[p_turn].can_action == FALSE)continue;
 
@@ -3445,7 +3464,7 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 					printf("｜%dのダメージを与えた　　　　　　　｜\n", damage);
 					printf("＋―――――――――――――――――＋\n");
 					if (wait)_getch();
-				}
+				}																																																																																																								
 			}
 			else if (characters[p_turn].action == 1) {
 				int target = characters[p_turn].action_spell_target;
@@ -3470,10 +3489,14 @@ void battle_main(Character* characters, BOOL wait, BOOL disp) {
 			if (characters[i].HP != 0)enemy_alive = TRUE;
 		for (int i = 0; i < fielddata.playernum; i++)
 			if (characters[i].HP != 0)player_alive = TRUE;
+		int afterHP = 0;
+		afterHP=getEnemyHP(characters);
+		printf("%d,%d,after,before%d,",afterHP,prevHP,p_turn);
+		if (p_turn < fielddata.playernum)damages[p_turn] = prevHP - afterHP;
 
 		if (enemy_alive == FALSE)break;
 		if (player_alive == FALSE)break;
-		printf("%d,,",action_num);
+
 	}
 }
 
@@ -3481,4 +3504,13 @@ void get_fielddata(int *a,int *b)
 {
 	a[0] = fielddata.playernum;
 	b[0] = fielddata.enemynum;
+}
+
+void get_damages(int* player1damage, int* player2damage, int* player3damage, int* player4damage)
+{
+	printf("%d,%d,damages",damages[0],damages[1]);
+	*player1damage = damages[0];
+	*player2damage = damages[1];
+	*player3damage = damages[2];
+	*player4damage = damages[3];
 }
